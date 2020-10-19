@@ -9,6 +9,7 @@ project(agribot_tools_management)
 #############################################################################
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  agribot_msgs
 )
 
 ################################################
