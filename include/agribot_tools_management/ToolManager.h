@@ -1,20 +1,28 @@
 /*
-* Copyright (C) 2020 Agribot. All rights reserved.
-*/
+ * Copyright (C) 2020 Agribot. All rights reserved.
+ */
 
 #pragma once
 
 #include <cstdio>
+#include <cstdint>
 #include <cstdlib>
 #include <vector>
 
 class ToolManager
 {
-  private:
-    //vector<uint8_t> front_tags_id_vector_;
-    //vector<uint8_t> back_tags_id_vector_;
-    uint8_t state_;
-  public:
-    ToolManager();
-    bool setState(uint8_t state);
+private:
+  uint8_t state_;
+
+public:
+  const struct
+  {
+    uint8_t idle;
+    uint8_t scan;
+    uint8_t tlp_config;
+  } tool_mngr_state_ = { 0, 1, 2 };
+
+  ToolManager();
+  ~ToolManager();
+  bool setState(uint8_t state);
 };
