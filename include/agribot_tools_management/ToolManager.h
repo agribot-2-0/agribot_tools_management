@@ -9,20 +9,20 @@
 #include <cstdlib>
 #include <vector>
 
+enum class ToolManagerState
+{
+  idle,
+  scan,
+  tlp_config
+};
+
 class ToolManager
 {
 private:
-  uint8_t state_;
+  ToolManagerState tool_mngr_state_;
 
 public:
-  const struct
-  {
-    uint8_t idle;
-    uint8_t scan;
-    uint8_t tlp_config;
-  } tool_mngr_state_ = { 0, 1, 2 };
-
   ToolManager();
   ~ToolManager();
-  bool setState(uint8_t state);
+  bool setState(ToolManagerState state);
 };

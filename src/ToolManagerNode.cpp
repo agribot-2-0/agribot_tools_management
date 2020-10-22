@@ -4,12 +4,10 @@
 
 #include "agribot_tools_management/ToolManagerNode.h"
 
-ToolManagerNode::ToolManagerNode()
+ToolManagerNode::ToolManagerNode(int argc, char** argv)
 {
-}
-
-ToolManagerNode::ToolManagerNode(ros::NodeHandle* nh) : node_handle_(nh)
-{
+  ros::init(argc, argv, "agribot_tools_management_node");
+  node_handle_ = std::make_shared<ros::NodeHandle>();
   tool_state_service_ = node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::state_request_service, this);
 }
 
@@ -20,16 +18,15 @@ bool ToolManagerNode::state_request_service(agribot_msgs::ToolState::Request& re
   switch (req.requested_state)
   {
     case req.IDLE:
-      // tool manager idle state handle
+      // TBD: tool manager idle state handle
       break;
     case req.SCAN:
       // tool manager scan tasks handle
-      // Perform
-      tool_manager_.setState(req.SCAN);
-      ret = false;
+      tool_manager_.setState(ToolManagerState::scan);
+      ret = true;
       break;
     case req.TOOLS_MANUAL:
-      // tool manager manual tools control handle
+      // TBD: tool manager manual tools control handle
       break;
   }
   return ret;

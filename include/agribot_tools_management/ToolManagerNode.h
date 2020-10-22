@@ -15,7 +15,7 @@
 class ToolManagerNode
 {
 private:
-  ros::NodeHandle* node_handle_; /*TODO: use some kind of smart pointer instead*/
+  std::shared_ptr<ros::NodeHandle> node_handle_;
   ros::ServiceServer tool_state_service_;
   ros::ServiceServer tags_service_;
   ros::ServiceServer rfid_power_service_;
@@ -24,8 +24,7 @@ private:
   bool state_request_service(agribot_msgs::ToolState::Request& req,    // NOLINT(runtime/references)
                              agribot_msgs::ToolState::Response& res);  // NOLINT(runtime/references)
 public:
-  ToolManagerNode();
-  ToolManagerNode(ros::NodeHandle* nh);
+  ToolManagerNode(int argc, char** argv);
   ~ToolManagerNode();
   void run();
 };

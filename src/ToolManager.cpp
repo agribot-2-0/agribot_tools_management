@@ -7,12 +7,12 @@
 
 ToolManager::ToolManager()
 {
-  state_ = tool_mngr_state_.idle;
+  tool_mngr_state_ = ToolManagerState::idle;
 }
 
-bool ToolManager::setState(uint8_t state)
+bool ToolManager::setState(ToolManagerState state)
 {
-  state_ = state;
+  tool_mngr_state_ = state;
 }
 
 ToolManager::~ToolManager()

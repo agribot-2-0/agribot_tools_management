@@ -1,1 +1,1 @@
-<node name="agribot_tool_management_node" pkg="agribot_tool_management" type="agribot_tool_management_node">
+<node pkg="agribot_tools_management" type="agribot_tools_management_node" name="agribot_tools_management_node">
