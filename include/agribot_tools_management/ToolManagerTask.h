@@ -1,5 +1,10 @@
+/*
+ * Copyright (C) 2020 Agribot. All rights reserved.
+ */
 
-namespace ToolManager
+#pragma once
+
+namespace tool_manager
 {
   enum class ErrorCode
   {
@@ -9,5 +14,5 @@ namespace ToolManager
   {
   public:
     virtual ErrorCode perform() = 0;
-  }
-}  // namespace ToolManager
+  };
+}  // namespace tool_manager

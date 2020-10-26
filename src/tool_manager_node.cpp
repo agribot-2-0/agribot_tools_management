@@ -6,6 +6,6 @@
 
 int main(int argc, char** argv)
 {
-  ToolManagerNode tool_mngr_node(argc, argv);
+  tool_manager::ToolManagerNode tool_mngr_node(argc, argv);
   tool_mngr_node.run();
 }

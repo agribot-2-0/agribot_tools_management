@@ -10,26 +10,31 @@
 #include <agribot_msgs/Tags.h>
 #include <agribot_msgs/ToolManagerState.h>
 #include <agribot_msgs/RfidPower.h>
-#include "agribot_tools_management/ToolManager.h"
 #include "agribot_tools_management/ToolManagerTask.h"
 
-namespace ToolManager
+namespace tool_manager
 {
-  enum class Antennas
+  enum class Antenna
   {
     Front = 1,
     Back = 2
   };
+
   class ToolManagerNode
   {
   private:
-    class Scanner: public ToolManagerTask
+    class Scanner : public ToolManagerTask
     {
+    private:
+      Antenna ant_;
+
     public:
       Scanner();
       ErrorCode perform();
+      void setAnt(Antenna sel_ant);
     } scan_handler_;
-    class TplController: public ToolManagerTask
+
+    class TplController : public ToolManagerTask
     {
     public:
       TplController();
@@ -41,11 +46,12 @@ namespace ToolManager
     ros::ServiceClient tags_srv_client_;
     ros::ServiceClient rfid_power_srv_client_;
 
-    bool state_request_service(agribot_msgs::ToolManagerState::Request& req,    // NOLINT(runtime/references)
-                               agribot_msgs::ToolManagerState::Response& res);  // NOLINT(runtime/references)
+    bool checkErr(ErrorCode err, agribot_msgs::ToolManagerState::Response& res);  // NOLINT(runtime/references)
+    bool state_request_service(agribot_msgs::ToolManagerState::Request& req,      // NOLINT(runtime/references)
+                               agribot_msgs::ToolManagerState::Response& res);    // NOLINT(runtime/references)
   public:
     ToolManagerNode(int argc, char** argv);
     ~ToolManagerNode();
     void run();
   };
-}  // namespace ToolManager
+}  // namespace tool_manager

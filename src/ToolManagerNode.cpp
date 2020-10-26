@@ -4,7 +4,7 @@
 
 #include "agribot_tools_management/ToolManagerNode.h"
 
-namespace ToolManager
+namespace tool_manager
 {
   ToolManagerNode::ToolManagerNode(int argc, char** argv)
   {
@@ -14,30 +14,45 @@ namespace ToolManager
         node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::state_request_service, this);
   }
 
+  bool ToolManagerNode::checkErr(ErrorCode err,
+                                 agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
+  {
+    if (err == ErrorCode::Success)
+    {
+      res.result = res.SUCCESS;
+      return true;
+    }
+    else
+    {
+      res.result = res.FAIL;
+      ROS_ERROR_STREAM("[TOOL MANAGEMENT] Request failed with error code: " << static_cast<int>(err));
+      return false;
+    }
+  }
+
   bool
   ToolManagerNode::state_request_service(agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
                                          agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
   {
-    bool ret = false;
+    ErrorCode ret = ErrorCode::Success;
     switch (req.requested_state)
-      ;
     {
       case req.IDLE:
-        ret = true;
+        ret = ErrorCode::Success;
         break;
-      case req.scan_front:
-        scan_handler_.setAnt(Antennas::Front);
+      case req.SCAN_FRONT:
+        scan_handler_.setAnt(Antenna::Front);
         ret = scan_handler_.perform();
         break;
-      case req.scan_back:
-        scan_handler_.setAnt(Antennas::Back);
+      case req.SCAN_BACK:
+        scan_handler_.setAnt(Antenna::Back);
         ret = scan_handler_.perform();
         break;
-      case req.set_tlp:
+      case req.SET_TPL:
         ret = tlp_control_handler_.perform();
         break;
     }
-    return ret;
+    return checkErr(ret, res);
   }
 
   void ToolManagerNode::run()
@@ -54,4 +69,4 @@ namespace ToolManager
   {
   }
 
-}  // namespace ToolManager
+}  // namespace tool_manager
