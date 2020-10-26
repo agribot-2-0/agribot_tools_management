@@ -12,6 +12,8 @@ namespace tool_manager
     node_handle_ = std::make_shared<ros::NodeHandle>();
     tool_state_srv_ =
         node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::state_request_service, this);
+    tags_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/tags");
+    rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/antennas/power");
   }
 
   bool ToolManagerNode::checkErr(ErrorCode err,
@@ -49,20 +51,18 @@ namespace tool_manager
         ret = scan_handler_.perform();
         break;
       case req.SET_TPL:
-        ret = tlp_control_handler_.perform();
+        ret = tpl_control_handler_.perform();
         break;
     }
+    res.ids = scan_handler_.getDetectedTags();
     return checkErr(ret, res);
   }
 
   void ToolManagerNode::run()
   {
-    ros::Rate loop_rate(1);
-    while (ros::ok())
-    {
-      ros::spinOnce();
-      loop_rate.sleep();
-    }
+    ros::AsyncSpinner spinner(2);
+    spinner.start();
+    ros::waitForShutdown();
   }
 
   ToolManagerNode::~ToolManagerNode()

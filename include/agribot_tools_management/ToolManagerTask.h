@@ -8,7 +8,12 @@ namespace tool_manager
 {
   enum class ErrorCode
   {
-    Success = 0
+    Success = 0,
+    NoTagsFound,
+    MoreThanOneTagFound,
+    AgribotIsNotInManualState,
+    CantReachDesiredToolPosition,
+    RfidServiceError
   };
   class ToolManagerTask
   {
