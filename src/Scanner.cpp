@@ -8,8 +8,8 @@ namespace tool_manager
 {
   ToolManagerNode::Scanner::Scanner()
   {
-    pwr_[Antenna::Front] = antenna_power_info::MinAntPower;
-    pwr_[Antenna::Back] = antenna_power_info::MinAntPower;
+    pwr_[Antenna::Front] = antenna_power_info.MinAntPower;
+    pwr_[Antenna::Back] = antenna_power_info.MinAntPower;
   }
 
   void ToolManagerNode::Scanner::setAnt(Antenna sel_ant)
@@ -19,17 +19,17 @@ namespace tool_manager
 
   void ToolManagerNode::Scanner::increase_antenna_power()
   {
-    if (pwr_[ant_] < antenna_power_info::MaxAntPower)
+    if (pwr_[ant_] < antenna_power_info.MaxAntPower)
     {
-      pwr_[ant_] += antenna_power_info::AntPwrResolution;
+      pwr_[ant_] += antenna_power_info.AntPwrResolution;
     }
   }
 
   void ToolManagerNode::Scanner::decrease_antenna_power()
   {
-    if (pwr_[ant_] > antenna_power_info::MinAntPower)
+    if (pwr_[ant_] > antenna_power_info.MinAntPower)
     {
-      pwr_[ant_] -= antenna_power_info::AntPwrResolution;
+      pwr_[ant_] -= antenna_power_info.AntPwrResolution;
     }
   }
 
@@ -44,11 +44,12 @@ namespace tool_manager
 
   bool ToolManagerNode::Scanner::scan()
   {
-    agribot_msgs::Tags get_tags_msg;
-    get_tags_msg.request.selected_antenna = static_cast<uint8_t>(ant_);
-    if (tags_srv_client_.call(get_tags_msg))
+    agribot_msgs::Tags tags_msg;
+    tags_msg.request.selected_antenna = static_cast<uint8_t>(ant_);
+    if (ToolManagerNode::tags_srv_client_.call(tags_msg))
     {
-      detected_tags_ = tags_srv_client_.response.ids;
+      for (int i = 0; i < tags_msg.response.ids.size(); i++)
+        detected_tags_.push_back(tags_msg.response.ids[i]);
     }
     else
     {
@@ -88,8 +89,8 @@ namespace tool_manager
     }
   }
 
-  std::vector<uint8_t> ToolManagerNode::Scanner::getDetectedTags()
+  void ToolManagerNode::Scanner::getDetectedTags(std::vector<std::uint16_t>& vDiscoveredTags)
   {
-    return detected_tags_;
+    vDiscoveredTags = detected_tags_;
   }
 }  // namespace tool_manager

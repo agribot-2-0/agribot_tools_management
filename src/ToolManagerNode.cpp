@@ -54,7 +54,7 @@ namespace tool_manager
         ret = tpl_control_handler_.perform();
         break;
     }
-    res.ids = scan_handler_.getDetectedTags();
+    scan_handler_.getDetectedTags(res.ids);
     return checkErr(ret, res);
   }
 
