@@ -6,18 +6,24 @@
 
 namespace tool_manager
 {
-  ToolManagerNode::Scanner::Scanner()
+  Scanner::Scanner()
   {
     pwr_[Antenna::Front] = antenna_power_info.MinAntPower;
     pwr_[Antenna::Back] = antenna_power_info.MinAntPower;
   }
 
-  void ToolManagerNode::Scanner::setAnt(Antenna sel_ant)
+  void Scanner::setAnt(uint8_t sel_ant)
   {
-    ant_ = sel_ant;
+    pwr_change_attempts_ = 0;  // new antenna, new attempts cnt
+    ant_ = static_cast<Antenna>(sel_ant);
   }
 
-  void ToolManagerNode::Scanner::increase_antenna_power()
+  uint8_t Scanner::getAnt()
+  {
+    return static_cast<uint8_t>(ant_);
+  }
+
+  void Scanner::increaseAntennaPower()
   {
     if (pwr_[ant_] < antenna_power_info.MaxAntPower)
     {
@@ -25,7 +31,7 @@ namespace tool_manager
     }
   }
 
-  void ToolManagerNode::Scanner::decrease_antenna_power()
+  void Scanner::decreaseAntennaPower()
   {
     if (pwr_[ant_] > antenna_power_info.MinAntPower)
     {
@@ -33,7 +39,7 @@ namespace tool_manager
     }
   }
 
-  bool ToolManagerNode::Scanner::entire_power_range_inspected()
+  bool Scanner::entirePowerRangeInspected()
   {
     if (pwr_change_attempts_ >= max_number_of_iterations)
     {
@@ -42,55 +48,18 @@ namespace tool_manager
     return true;
   }
 
-  bool ToolManagerNode::Scanner::scan()
+  double Scanner::adjustPower(std::size_t numberOfTags)
   {
-    agribot_msgs::Tags tags_msg;
-    tags_msg.request.selected_antenna = static_cast<uint8_t>(ant_);
-    if (ToolManagerNode::tags_srv_client_.call(tags_msg))
+    pwr_change_attempts_++;
+    switch (numberOfTags)
     {
-      for (int i = 0; i < tags_msg.response.ids.size(); i++)
-        detected_tags_.push_back(tags_msg.response.ids[i]);
-    }
-    else
-    {
-      // Sth went wrong with requesting tags scanu
-      return false;
-    }
-    return true;
-  }
-
-  ErrorCode ToolManagerNode::Scanner::perform()
-  {
-    while (1)
-    {
-      if (!scan())
-      {
-        return ErrorCode::RfidServiceError;
-      }
-      switch (detected_tags_.size())
-      {
-        case 0:  // No tags detected
-          if (entire_power_range_inspected())
-          {
-            return ErrorCode::NoTagsFound;
-          }
-          increase_antenna_power();
-          break;
-        case 1:  // One tag detected
-          return ErrorCode::Success;
-        case 2:  // Two tag detected
-          if (entire_power_range_inspected())
-          {
-            return ErrorCode::MoreThanOneTagFound;
-          }
-          decrease_antenna_power();
-          break;
-      }
+      case 0:
+        increaseAntennaPower();
+        break;
+      case 2:
+        decreaseAntennaPower();
+        break;
     }
   }
 
-  void ToolManagerNode::Scanner::getDetectedTags(std::vector<std::uint16_t>& vDiscoveredTags)
-  {
-    vDiscoveredTags = detected_tags_;
-  }
 }  // namespace tool_manager

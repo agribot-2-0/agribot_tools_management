@@ -11,13 +11,13 @@ namespace tool_manager
     ros::init(argc, argv, "agribot_tools_management_node");
     node_handle_ = std::make_shared<ros::NodeHandle>();
     tool_state_srv_ =
-        node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::state_request_service, this);
+        node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::stateRequestService, this);
     tags_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/tags");
     rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/antennas/power");
   }
 
-  bool ToolManagerNode::checkErr(ErrorCode err,
-                                 agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
+  bool ToolManagerNode::checkErrCode(ErrorCode err,
+                                     agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
   {
     if (err == ErrorCode::Success)
     {
@@ -32,30 +32,67 @@ namespace tool_manager
     }
   }
 
+  ErrorCode ToolManagerNode::getTagsSrvCall(std::vector<uint16_t>& detected_tags)
+  {
+    agribot_msgs::Tags tags_msg;
+    tags_msg.request.selected_antenna = static_cast<uint8_t>(scan_handler_.getAnt());
+    if (tags_srv_client_.call(tags_msg))
+    {
+      for (int i = 0; i < tags_msg.response.ids.size(); i++)
+      {
+        detected_tags.push_back(tags_msg.response.ids[i]);
+      }
+      return ErrorCode::Success;
+    }
+    else
+    {
+      return ErrorCode::RfidServiceError;
+    }
+  }
+
+  ErrorCode ToolManagerNode::setPwrSrvCall(double pwr)
+  {
+    agribot_msgs::RfidPower pwr_msg;
+    pwr_msg.request.power_value = pwr;
+    pwr_msg.request.selected_antenna = scan_handler_.getAnt();
+    if (rfid_power_srv_client_.call(pwr_msg))
+    {
+      return ErrorCode::Success;
+    }
+    else
+    {
+      return ErrorCode::RfidServiceError;
+    }
+  }
+
   bool
-  ToolManagerNode::state_request_service(agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
-                                         agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
+  ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
+                                       agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
   {
     ErrorCode ret = ErrorCode::Success;
     switch (req.requested_state)
     {
-      case req.IDLE:
-        ret = ErrorCode::Success;
-        break;
       case req.SCAN_FRONT:
-        scan_handler_.setAnt(Antenna::Front);
-        ret = scan_handler_.perform();
-        break;
       case req.SCAN_BACK:
-        scan_handler_.setAnt(Antenna::Back);
-        ret = scan_handler_.perform();
+        scan_handler_.setAnt(req.requested_state);
+        while (!scan_handler_.entirePowerRangeInspected())
+        {
+          if (checkErrCode(getTagsSrvCall(res.ids), res))  // if there is sth wrong with tags service
+          {
+            return false;
+          }
+          double pwr = scan_handler_.adjustPower(res.ids.size());
+          if (checkErrCode(setPwrSrvCall(pwr), res))  // if there is sth wrong with pwr service
+          {
+            return false;
+          }
+        }
         break;
       case req.SET_TPL:
-        ret = tpl_control_handler_.perform();
+        // TBD
         break;
     }
-    scan_handler_.getDetectedTags(res.ids);
-    return checkErr(ret, res);
+    return true;
   }
 
   void ToolManagerNode::run()
