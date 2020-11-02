@@ -81,10 +81,18 @@ namespace tool_manager
           {
             return false;
           }
-          double pwr = scan_handler_.adjustPower(res.ids.size());
-          if (checkErrCode(setPwrSrvCall(pwr), res))  // if there is sth wrong with pwr service
+          scan_handler_.setTagsCnt(res.ids.size());
+          if (scan_handler_.scanCorrect())
           {
-            return false;
+            break;
+          }
+          else
+          {
+            double pwr = scan_handler_.adjustPower();
+            if (checkErrCode(setPwrSrvCall(pwr), res))  // if there is sth wrong with pwr service
+            {
+              return false;
+            }
           }
         }
         break;

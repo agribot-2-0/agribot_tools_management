@@ -38,6 +38,7 @@ namespace tool_manager
     Antenna ant_;
     std::size_t pwr_change_attempts_;
     std::unordered_map<Antenna, double, HashAnt> pwr_;
+    uint8_t tags_cnt_;
 
   public:
     Scanner();
@@ -46,6 +47,8 @@ namespace tool_manager
     uint8_t getAnt();
     void decreaseAntennaPower();
     bool entirePowerRangeInspected();
-    double adjustPower(std::size_t numberOfTags);
+    void setTagsCnt(std::size_t number_of_tags);
+    bool scanCorrect();
+    double adjustPower();
   };
 }  // namespace tool_manager

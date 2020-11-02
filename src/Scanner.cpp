@@ -48,10 +48,20 @@ namespace tool_manager
     return true;
   }
 
-  double Scanner::adjustPower(std::size_t numberOfTags)
+  void Scanner::setTagsCnt(std::size_t number_of_tags)
+  {
+    tags_cnt_ = number_of_tags;
+  }
+
+  bool Scanner::scanCorrect()
+  {
+    return tags_cnt_ == 1 ? true : false;
+  }
+
+  double Scanner::adjustPower()
   {
     pwr_change_attempts_++;
-    switch (numberOfTags)
+    switch (tags_cnt_)
     {
       case 0:
         increaseAntennaPower();
