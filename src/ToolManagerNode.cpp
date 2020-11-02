@@ -13,7 +13,7 @@ namespace tool_manager
     tool_state_srv_ =
         node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::stateRequestService, this);
     tags_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/tags");
-    rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/antennas/power");
+    rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::RfidPower>("/agribot/rfid/antennas/power");
   }
 
   bool ToolManagerNode::checkErrCode(ErrorCode err,
@@ -36,6 +36,7 @@ namespace tool_manager
   {
     agribot_msgs::Tags tags_msg;
     tags_msg.request.selected_antenna = static_cast<uint8_t>(scan_handler_.getAnt());
+    detected_tags.clear();
     if (tags_srv_client_.call(tags_msg))
     {
       for (int i = 0; i < tags_msg.response.ids.size(); i++)
@@ -46,7 +47,7 @@ namespace tool_manager
     }
     else
     {
-      return ErrorCode::RfidServiceError;
+      return ErrorCode::TagsServiceError;
     }
   }
 
@@ -61,7 +62,7 @@ namespace tool_manager
     }
     else
     {
-      return ErrorCode::RfidServiceError;
+      return ErrorCode::PowerServiceError;
     }
   }
 
@@ -70,17 +71,20 @@ namespace tool_manager
                                        agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
   {
     ErrorCode ret = ErrorCode::Success;
+    ROS_INFO_STREAM("enter callback");
     switch (req.requested_state)
     {
       case req.SCAN_FRONT:
       case req.SCAN_BACK:
         scan_handler_.setAnt(req.requested_state);
+        ROS_INFO_STREAM("Scan triggered from from ant " << static_cast<int>(scan_handler_.getAnt()));
         while (!scan_handler_.entirePowerRangeInspected())
         {
-          if (checkErrCode(getTagsSrvCall(res.ids), res))  // if there is sth wrong with tags service
+          if (!checkErrCode(getTagsSrvCall(res.ids), res))  // if there is sth wrong with tags service
           {
             return false;
           }
+          ROS_INFO_STREAM("Tags detected: " << static_cast<int>(res.ids.size()));
           scan_handler_.setTagsCnt(res.ids.size());
           if (scan_handler_.scanCorrect())
           {
@@ -89,7 +93,7 @@ namespace tool_manager
           else
           {
             double pwr = scan_handler_.adjustPower();
-            if (checkErrCode(setPwrSrvCall(pwr), res))  // if there is sth wrong with pwr service
+            if (!checkErrCode(setPwrSrvCall(pwr), res))  // if there is sth wrong with pwr service
             {
               return false;
             }

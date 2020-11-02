@@ -9,7 +9,8 @@ namespace tool_manager
     Success = 0,
     NoTagsFound,
     MoreThanOneTagFound,
-    RfidServiceError
+    TagsServiceError,
+    PowerServiceError
   };
   enum class Antenna
   {

@@ -43,9 +43,9 @@ namespace tool_manager
   {
     if (pwr_change_attempts_ >= max_number_of_iterations)
     {
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
   void Scanner::setTagsCnt(std::size_t number_of_tags)
@@ -61,14 +61,13 @@ namespace tool_manager
   double Scanner::adjustPower()
   {
     pwr_change_attempts_++;
-    switch (tags_cnt_)
+    if (tags_cnt_ == 0) // increase power, if no tags detected
     {
-      case 0:
-        increaseAntennaPower();
-        break;
-      case 2:
-        decreaseAntennaPower();
-        break;
+      increaseAntennaPower();
+    }
+    if (tags_cnt_ > 1)
+    {
+      decreaseAntennaPower(); // decrease power, if no more than one tag detected
     }
   }
 
