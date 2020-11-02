@@ -17,21 +17,21 @@ enum class Antenna
 class HashAnt
 {
  public:
-  std::size_t operator()(const Antenna& a) const
+  std::size_t operator()(const Antenna& ant) const
   {
-    return static_cast<std::size_t>(a);
+    return static_cast<std::size_t>(ant);
   }
 };
 class Scanner
 {
  private:
-  const std::size_t max_number_of_iterations = 128;
+  const std::size_t max_number_of_iterations_ = 128;
   const struct
   {
     double ant_pwr_resolution;
     double min_ant_pwr;
     double max_ant_pwr;
-  } antenna_power_info{ 0.25, 17.0, 33.0 };
+  } antenna_power_info_{ 0.25, 17.0, 33.0 };
 
   Antenna ant_;
   std::size_t pwr_change_attempts_;
@@ -40,11 +40,11 @@ class Scanner
 
  public:
   Scanner();
-  void increaseAntennaPower();
   void setAnt(uint8_t sel_ant);
   uint8_t getAnt();
-  void decreaseAntennaPower();
   bool entirePowerRangeInspected();
+  void increaseAntennaPower();
+  void decreaseAntennaPower();
   void setTagsCnt(std::size_t number_of_tags);
   bool scanCorrect();
   double adjustPower();

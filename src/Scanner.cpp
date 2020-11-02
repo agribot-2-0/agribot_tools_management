@@ -8,8 +8,8 @@ namespace tool_manager
 {
 Scanner::Scanner()
 {
-  pwr_[Antenna::Front] = antenna_power_info.min_ant_pwr;
-  pwr_[Antenna::Back] = antenna_power_info.min_ant_pwr;
+  pwr_[Antenna::Front] = antenna_power_info_.min_ant_pwr;
+  pwr_[Antenna::Back] = antenna_power_info_.min_ant_pwr;
 }
 
 void Scanner::setAnt(uint8_t sel_ant)
@@ -23,30 +23,31 @@ uint8_t Scanner::getAnt()
   return static_cast<uint8_t>(ant_);
 }
 
-void Scanner::increaseAntennaPower()
-{
-  if (pwr_[ant_] < antenna_power_info.max_ant_pwr)
-  {
-    pwr_[ant_] += antenna_power_info.ant_pwr_resolution;
-  }
-}
-
-void Scanner::decreaseAntennaPower()
-{
-  if (pwr_[ant_] > antenna_power_info.min_ant_pwr)
-  {
-    pwr_[ant_] -= antenna_power_info.ant_pwr_resolution;
-  }
-}
-
 bool Scanner::entirePowerRangeInspected()
 {
-  if (pwr_change_attempts_ >= max_number_of_iterations)
+  if (pwr_change_attempts_ >= max_number_of_iterations_)
   {
     return true;
   }
   return false;
 }
+
+void Scanner::increaseAntennaPower()
+{
+  if (pwr_[ant_] < antenna_power_info_.max_ant_pwr)
+  {
+    pwr_[ant_] += antenna_power_info_.ant_pwr_resolution;
+  }
+}
+
+void Scanner::decreaseAntennaPower()
+{
+  if (pwr_[ant_] > antenna_power_info_.min_ant_pwr)
+  {
+    pwr_[ant_] -= antenna_power_info_.ant_pwr_resolution;
+  }
+}
+
 
 void Scanner::setTagsCnt(std::size_t number_of_tags)
 {

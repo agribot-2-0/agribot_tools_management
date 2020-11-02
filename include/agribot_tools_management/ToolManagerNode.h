@@ -22,13 +22,13 @@ namespace tool_manager
 class ToolManagerNode
 {
  private:
-  Scanner scan_handler_;
-  TplController tpl_control_handler_;
-
   std::shared_ptr<ros::NodeHandle> node_handle_;
   ros::ServiceServer tool_state_srv_;
   ros::ServiceClient tags_srv_client_;
   ros::ServiceClient rfid_power_srv_client_;
+
+  Scanner scan_handler_;
+  TplController tpl_control_handler_;  // TODO(mwiadoms): Implement set tpl functionality
 
   ErrorCode getTagsSrvCall(std::vector<uint16_t>* detected_tags);
   ErrorCode setPwrSrvCall(double pwr);

@@ -69,21 +69,19 @@ ErrorCode ToolManagerNode::setPwrSrvCall(double pwr)
 bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
                                           agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
 {
-  ErrorCode ret = ErrorCode::Success;
-  ROS_INFO_STREAM("enter callback");
   switch (req.requested_state)
   {
     case req.SCAN_FRONT:
     case req.SCAN_BACK:
       scan_handler_.setAnt(req.requested_state);
-      ROS_INFO_STREAM("Scan triggered from from ant " << static_cast<int>(scan_handler_.getAnt()));
+      ROS_INFO_STREAM("[TOOL_MANAGER] Scan triggered for ant: " << static_cast<int>(scan_handler_.getAnt()));
       while (!scan_handler_.entirePowerRangeInspected())
       {
         if (!checkErrCode(getTagsSrvCall(&(res.ids)), res))  // if there is sth wrong with tags service
         {
           return false;
         }
-        ROS_INFO_STREAM("Tags detected: " << static_cast<int>(res.ids.size()));
+        ROS_INFO_STREAM("[TOOL_MANAGER] Tags detected: " << static_cast<int>(res.ids.size()));
         scan_handler_.setTagsCnt(res.ids.size());
         if (scan_handler_.scanCorrect())
         {
@@ -100,7 +98,7 @@ bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Reques
       }
       break;
     case req.SET_TPL:
-      // TBD
+      // TODO(mwiadoms): Implement set tpl functionality
       break;
   }
   return true;
