@@ -81,6 +81,7 @@ bool ToolManagerNode::performScanAndPwrAdjustments(
       return false;
     }
   }
+  return true;
 }
 
 bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
