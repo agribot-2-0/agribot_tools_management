@@ -5,7 +5,7 @@
 #pragma once
 
 #include <unordered_map>
-#include "agribot_tools_management/ErrorCode.h"
+#include "agribot_tools_management/ReturnCode.h"
 
 namespace tool_manager
 {
@@ -40,13 +40,13 @@ class Scanner
 
  public:
   Scanner();
-  void setAnt(uint8_t sel_ant);
-  uint8_t getAnt();
-  bool entirePowerRangeInspected();
+  void setAnt(Antenna sel_ant);
+  Antenna getAnt() const;
+  bool entirePowerRangeInspected() const;
   void increaseAntennaPower();
   void decreaseAntennaPower();
   void setTagsCnt(std::size_t number_of_tags);
-  bool scanCorrect();
+  bool scanCorrect() const;
   double adjustPower();
 };
 }  // namespace tool_manager

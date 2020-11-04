@@ -16,53 +16,70 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
   rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::RfidPower>("/agribot/rfid/antennas/power");
 }
 
-bool ToolManagerNode::checkErrCode(ErrorCode err,
+bool ToolManagerNode::checkErrCode(ReturnCode err,
                                    agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
 {
-  if (err == ErrorCode::Success)
+  if (err == ReturnCode::Success)
   {
     res.result = res.SUCCESS;
     return true;
   }
-  else
-  {
-    res.result = res.FAIL;
-    ROS_ERROR_STREAM("[TOOL MANAGEMENT] Request failed with error code: " << static_cast<int>(err));
-    return false;
-  }
+  res.result = res.FAIL;
+  ROS_ERROR_STREAM("[TOOL MANAGEMENT] Request failed with error code: " << static_cast<int>(err));
+  return false;
 }
 
-ErrorCode ToolManagerNode::getTagsSrvCall(std::vector<uint16_t>* detected_tags)
+ReturnCode ToolManagerNode::getTagsSrvCall(std::vector<uint16_t>* detected_tags)
 {
   agribot_msgs::Tags tags_msg;
   tags_msg.request.selected_antenna = static_cast<uint8_t>(scan_handler_.getAnt());
   detected_tags->clear();
-  if (tags_srv_client_.call(tags_msg))
+  if (!tags_srv_client_.call(tags_msg))
   {
-    for (int i = 0; i < tags_msg.response.ids.size(); i++)
-    {
-      detected_tags->push_back(tags_msg.response.ids[i]);
-    }
-    return ErrorCode::Success;
+    return ReturnCode::TagsServiceError;
   }
-  else
+  for (auto id : tags_msg.response.ids)
   {
-    return ErrorCode::TagsServiceError;
+    detected_tags->push_back(id);
   }
+  return ReturnCode::Success;
 }
 
-ErrorCode ToolManagerNode::setPwrSrvCall(double pwr)
+ReturnCode ToolManagerNode::setPwrSrvCall(double pwr)
 {
   agribot_msgs::RfidPower pwr_msg;
   pwr_msg.request.power_value = pwr;
-  pwr_msg.request.selected_antenna = scan_handler_.getAnt();
-  if (rfid_power_srv_client_.call(pwr_msg))
+  pwr_msg.request.selected_antenna = static_cast<uint8_t>(scan_handler_.getAnt());
+  if (!rfid_power_srv_client_.call(pwr_msg))
   {
-    return ErrorCode::Success;
+    return ReturnCode::PowerServiceError;
   }
-  else
+  return ReturnCode::Success;
+}
+
+bool ToolManagerNode::performScanAndPwrAdjustments(
+    agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
+    agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
+{
+  scan_handler_.setAnt(static_cast<Antenna>(req.requested_state));
+  ROS_INFO_STREAM("[TOOL_MANAGER] Scan triggered for ant: " << static_cast<int>(scan_handler_.getAnt()));
+  while (!scan_handler_.entirePowerRangeInspected())
   {
-    return ErrorCode::PowerServiceError;
+    if (!checkErrCode(getTagsSrvCall(&(res.ids)), res))  // if there is sth wrong with tags service
+    {
+      return false;
+    }
+    ROS_INFO_STREAM("[TOOL_MANAGER] Tags detected: " << static_cast<int>(res.ids.size()));
+    scan_handler_.setTagsCnt(res.ids.size());
+    if (scan_handler_.scanCorrect())
+    {
+      return true;
+    }
+    double pwr = scan_handler_.adjustPower();
+    if (!checkErrCode(setPwrSrvCall(pwr), res))  // if there is sth wrong with pwr service
+    {
+      return false;
+    }
   }
 }
 
@@ -71,31 +88,13 @@ bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Reques
 {
   switch (req.requested_state)
   {
+    // The lack of break in SCAN_FRONT is made on purpose. Switch statement is operating in such manner, that
+    // SCAN_FRONT and SCAN_BACK will be served in one case, with the difference only in req.requested_state parameter.
+    // The cases are distincted inside scan_handler_, by setting proper selected antenna
+    // scan_handler_.setAnt(static_cast<Antenna>(req.requested_state));
     case req.SCAN_FRONT:
     case req.SCAN_BACK:
-      scan_handler_.setAnt(req.requested_state);
-      ROS_INFO_STREAM("[TOOL_MANAGER] Scan triggered for ant: " << static_cast<int>(scan_handler_.getAnt()));
-      while (!scan_handler_.entirePowerRangeInspected())
-      {
-        if (!checkErrCode(getTagsSrvCall(&(res.ids)), res))  // if there is sth wrong with tags service
-        {
-          return false;
-        }
-        ROS_INFO_STREAM("[TOOL_MANAGER] Tags detected: " << static_cast<int>(res.ids.size()));
-        scan_handler_.setTagsCnt(res.ids.size());
-        if (scan_handler_.scanCorrect())
-        {
-          break;
-        }
-        else
-        {
-          double pwr = scan_handler_.adjustPower();
-          if (!checkErrCode(setPwrSrvCall(pwr), res))  // if there is sth wrong with pwr service
-          {
-            return false;
-          }
-        }
-      }
+      return performScanAndPwrAdjustments(req, res);
       break;
     case req.SET_TPL:
       // TODO(mwiadoms): Implement set tpl functionality

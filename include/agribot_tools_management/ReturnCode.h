@@ -6,7 +6,7 @@
 
 namespace tool_manager
 {
-enum class ErrorCode  // TODO(mwiadoms): Add error codes concerning TPL set case
+enum class ReturnCode  // TODO(mwiadoms): Add error codes concerning TPL set case
 {
   Success = 0,
   TagsServiceError,

@@ -12,18 +12,18 @@ Scanner::Scanner()
   pwr_[Antenna::Back] = antenna_power_info_.min_ant_pwr;
 }
 
-void Scanner::setAnt(uint8_t sel_ant)
+void Scanner::setAnt(Antenna sel_ant)
 {
   pwr_change_attempts_ = 0;  // new antenna, new attempts cnt
-  ant_ = static_cast<Antenna>(sel_ant);
+  ant_ = sel_ant;
 }
 
-uint8_t Scanner::getAnt()
+Antenna Scanner::getAnt() const
 {
-  return static_cast<uint8_t>(ant_);
+  return ant_;
 }
 
-bool Scanner::entirePowerRangeInspected()
+bool Scanner::entirePowerRangeInspected() const
 {
   if (pwr_change_attempts_ >= max_number_of_iterations_)
   {
@@ -34,29 +34,36 @@ bool Scanner::entirePowerRangeInspected()
 
 void Scanner::increaseAntennaPower()
 {
-  if (pwr_[ant_] < antenna_power_info_.max_ant_pwr)
+  if (pwr_[ant_] + antenna_power_info_.ant_pwr_resolution < antenna_power_info_.max_ant_pwr)
   {
     pwr_[ant_] += antenna_power_info_.ant_pwr_resolution;
+  }
+  else
+  {
+    pwr_[ant_] = antenna_power_info_.max_ant_pwr;
   }
 }
 
 void Scanner::decreaseAntennaPower()
 {
-  if (pwr_[ant_] > antenna_power_info_.min_ant_pwr)
+  if (pwr_[ant_] - antenna_power_info_.ant_pwr_resolution > antenna_power_info_.min_ant_pwr)
   {
     pwr_[ant_] -= antenna_power_info_.ant_pwr_resolution;
   }
+  else
+  {
+    pwr_[ant_] = antenna_power_info_.min_ant_pwr;
+  }
 }
-
 
 void Scanner::setTagsCnt(std::size_t number_of_tags)
 {
   tags_cnt_ = number_of_tags;
 }
 
-bool Scanner::scanCorrect()
+bool Scanner::scanCorrect() const
 {
-  return tags_cnt_ == 1 ? true : false;
+  return tags_cnt_ == 1;
 }
 
 double Scanner::adjustPower()
@@ -66,9 +73,9 @@ double Scanner::adjustPower()
   {
     increaseAntennaPower();
   }
-  if (tags_cnt_ > 1)
+  else if (tags_cnt_ > 1)
   {
-    decreaseAntennaPower();  // decrease power, if no more than one tag detected
+    decreaseAntennaPower();  // decrease power, if more than one tag detected
   }
 }
 
