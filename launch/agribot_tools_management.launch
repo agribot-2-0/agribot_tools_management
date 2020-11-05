@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="agribot_tools_management" type="agribot_tools_management_node" name="agribot_tools_management_node" />
+</launch>
