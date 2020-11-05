@@ -30,13 +30,13 @@ class ToolManagerNode
   Scanner scan_handler_;
   TplController tpl_control_handler_;  // TODO(mwiadoms): Implement set tpl functionality
 
-  ReturnCode getTagsSrvCall(std::vector<uint16_t>* detected_tags);
+  ReturnCode getTagsSrvCall(std::vector<uint16_t>& detected_tags);  // NOLINT(runtime/references)
   ReturnCode setPwrSrvCall(double pwr);
-  bool performScanAndPwrAdjustments(agribot_msgs::ToolManagerState::Request& req,    // NOLINT(runtime/references)
-                                    agribot_msgs::ToolManagerState::Response& res);  // NOLINT(runtime/references)
-  bool checkErrCode(ReturnCode err, agribot_msgs::ToolManagerState::Response& res);  // NOLINT(runtime/references)
-  bool stateRequestService(agribot_msgs::ToolManagerState::Request& req,             // NOLINT(runtime/references)
-                           agribot_msgs::ToolManagerState::Response& res);           // NOLINT(runtime/references)
+  bool performScanAndPwrAdjustments(const agribot_msgs::ToolManagerState::Request& req,  // NOLINT(runtime/references)
+                                    agribot_msgs::ToolManagerState::Response& res);      // NOLINT(runtime/references)
+  bool checkErrCode(ReturnCode err, agribot_msgs::ToolManagerState::Response& res);      // NOLINT(runtime/references)
+  bool stateRequestService(agribot_msgs::ToolManagerState::Request& req,                 // NOLINT(runtime/references)
+                           agribot_msgs::ToolManagerState::Response& res);               // NOLINT(runtime/references)
  public:
   ToolManagerNode(int argc, char** argv);
   ~ToolManagerNode();

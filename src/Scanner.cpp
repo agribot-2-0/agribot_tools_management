@@ -25,20 +25,17 @@ Antenna Scanner::getAnt() const
 
 bool Scanner::entirePowerRangeInspected() const
 {
-  if (pwr_change_attempts_ >= max_number_of_iterations_)
+  if (pwr_change_attempts_ < max_number_of_iterations_)
   {
-    return true;
+    return false;
   }
-  return false;
+  return true;
 }
 
 void Scanner::increaseAntennaPower()
 {
-  if (pwr_[ant_] + antenna_power_info_.ant_pwr_resolution < antenna_power_info_.max_ant_pwr)
-  {
-    pwr_[ant_] += antenna_power_info_.ant_pwr_resolution;
-  }
-  else
+  pwr_[ant_] += antenna_power_info_.ant_pwr_resolution;
+  if (pwr_[ant_] > antenna_power_info_.max_ant_pwr)
   {
     pwr_[ant_] = antenna_power_info_.max_ant_pwr;
   }
@@ -46,11 +43,8 @@ void Scanner::increaseAntennaPower()
 
 void Scanner::decreaseAntennaPower()
 {
-  if (pwr_[ant_] - antenna_power_info_.ant_pwr_resolution > antenna_power_info_.min_ant_pwr)
-  {
-    pwr_[ant_] -= antenna_power_info_.ant_pwr_resolution;
-  }
-  else
+  pwr_[ant_] -= antenna_power_info_.ant_pwr_resolution;
+  if (pwr_[ant_] < antenna_power_info_.min_ant_pwr)
   {
     pwr_[ant_] = antenna_power_info_.min_ant_pwr;
   }
