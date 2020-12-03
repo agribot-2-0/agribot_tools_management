@@ -12,6 +12,8 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
   node_handle_ = std::make_shared<ros::NodeHandle>();
   tool_state_srv_ =
       node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::stateRequestService, this);
+  tpl_control_arbiter_srv_ = node_handle_->advertiseService("agribot/tool_management_control_source",
+                                                            &ToolManagerNode::controlArbiterService, this);
   tags_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/tags");
   rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::RfidPower>("/agribot/rfid/antennas/power");
 }
@@ -84,6 +86,11 @@ bool ToolManagerNode::performScanAndPwrAdjustments(
   return true;
 }
 
+bool ToolManagerNode::setTpl()
+{
+  return true;
+}
+
 bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
                                           agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
 {
@@ -94,10 +101,32 @@ bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Reques
     case req.SCAN_BACK:
       return performScanAndPwrAdjustments(req, res);
     case req.SET_TPL:
-      // TODO(mwiadoms): Implement set tpl functionality
+      return setTpl();
+    default:
       break;
   }
-  return true;
+  return false;
+}
+
+bool ToolManagerNode::controlArbiterService(
+    agribot_msgs::ToolManagerControlSource::Request& req,   // NOLINT(runtime/references)
+    agribot_msgs::ToolManagerControlSource::Response& res)  // NOLINT(runtime/references)
+{
+  switch (req.source)
+  {
+    case req.MANUAL:
+      tpl_control_arbiter_.setTplControlSource(ControlSource::Manual);
+      res.result = res.SUCCESS;
+      return true;
+    case req.NAVIGATION:
+      tpl_control_arbiter_.setTplControlSource(ControlSource::Navigation);
+      res.result = res.SUCCESS;
+      return true;
+    default:
+      tpl_control_arbiter_.setTplControlSource(ControlSource::None);
+      res.result = res.FAIL;
+      return false;
+  }
 }
 
 void ToolManagerNode::run()
