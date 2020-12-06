@@ -33,7 +33,7 @@ class TplArbiter
   TplArbiter() : source_(ControlSource::None){};
   void setTplControlSource(ControlSource const src);
   ControlSource getTplControlSource() const;
-  std::tuple<std::string, std::string> getFrtBckSourceTopics() const;
+  std::tuple<std::string, std::string> getFrtBckSourceTopics(ControlSource const src) const;
   std::tuple<std::string, std::string> getFrtBckDestinationTopics() const;
 };
 }  // namespace tool_manager

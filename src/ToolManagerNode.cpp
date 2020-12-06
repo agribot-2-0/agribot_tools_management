@@ -16,6 +16,29 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
                                                             &ToolManagerNode::controlArbiterService, this);
   tags_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/tags");
   rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::RfidPower>("/agribot/rfid/antennas/power");
+
+  // TPL config publishers:
+  auto [topic_front, topic_back] = tpl_control_arbiter_.getFrtBckDestinationTopics();
+  tpl_control_destination_front_pub_ = node_handle_->advertise<agribot_msgs::AgribotTool>(topic_front, 1);
+  tpl_control_destination_back_pub_ = node_handle_->advertise<agribot_msgs::AgribotTool>(topic_back, 1);
+
+  // TPL config subs manual:
+  std::tie(topic_front, topic_back) = tpl_control_arbiter_.getFrtBckSourceTopics(ControlSource::Manual);
+  ros::SubscribeOptions sub_cmd_tool_front_man = ros::SubscribeOptions::create<agribot_msgs::AgribotTool>(
+      topic_front, 1, boost::bind(&ToolManagerNode::cmdToolsFrontManualCallback, this, _1), ros::VoidPtr(), &queue_);
+  ros::SubscribeOptions sub_cmd_tool_back_man = ros::SubscribeOptions::create<agribot_msgs::AgribotTool>(
+      topic_back, 1, boost::bind(&ToolManagerNode::cmdToolsBackManualCallback, this, _1), ros::VoidPtr(), &queue_);
+  tpl_control_manual_topic_front_sub_ = node_handle_->subscribe(sub_cmd_tool_front_man);
+  tpl_control_manual_topic_back_sub_ = node_handle_->subscribe(sub_cmd_tool_back_man);
+
+  // TPL config subs navi:
+  std::tie(topic_front, topic_back) = tpl_control_arbiter_.getFrtBckSourceTopics(ControlSource::Navigation);
+  ros::SubscribeOptions sub_cmd_tool_front_nav = ros::SubscribeOptions::create<agribot_msgs::AgribotTool>(
+      topic_front, 1, boost::bind(&ToolManagerNode::cmdToolsFrontNaviCallback, this, _1), ros::VoidPtr(), &queue_);
+  ros::SubscribeOptions sub_cmd_tool_back_nav = ros::SubscribeOptions::create<agribot_msgs::AgribotTool>(
+      topic_back, 1, boost::bind(&ToolManagerNode::cmdToolsBackNaviCallback, this, _1), ros::VoidPtr(), &queue_);
+  tpl_control_navi_topic_front_sub_ = node_handle_->subscribe(sub_cmd_tool_front_nav);
+  tpl_control_navi_topic_back_sub_ = node_handle_->subscribe(sub_cmd_tool_back_nav);
 }
 
 bool ToolManagerNode::checkErrCode(ReturnCode err,
@@ -129,11 +152,38 @@ bool ToolManagerNode::controlArbiterService(
   }
 }
 
+void ToolManagerNode::cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
+{
+
+}
+
+void ToolManagerNode::cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
+{
+
+}
+
+void ToolManagerNode::cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
+{
+
+}
+
+void ToolManagerNode::cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
+{
+
+}
+
+
 void ToolManagerNode::run()
 {
+  // AsyncSpinner is used to be able to
   ros::AsyncSpinner spinner(2);
   spinner.start();
-  ros::waitForShutdown();
+  ros::Rate rate(10);
+  while (ros::ok())
+  {
+    ros::spinOnce();
+    rate.sleep();
+  }
 }
 
 ToolManagerNode::~ToolManagerNode()

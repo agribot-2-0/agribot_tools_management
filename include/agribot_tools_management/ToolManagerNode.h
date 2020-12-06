@@ -10,6 +10,7 @@
 #include <agribot_msgs/Tags.h>
 #include <agribot_msgs/ToolManagerState.h>
 #include <agribot_msgs/ToolManagerControlSource.h>
+#include <agribot_msgs/AgribotTool.h>
 #include <agribot_msgs/RfidPower.h>
 
 #include <vector>
@@ -30,6 +31,13 @@ class ToolManagerNode
   ros::ServiceClient tags_srv_client_;
   ros::ServiceClient rfid_power_srv_client_;
 
+  ros::Subscriber tpl_control_manual_topic_front_sub_;
+  ros::Subscriber tpl_control_manual_topic_back_sub_;
+  ros::Subscriber tpl_control_navi_topic_front_sub_;
+  ros::Subscriber tpl_control_navi_topic_back_sub_;
+  ros::Publisher tpl_control_destination_front_pub_;
+  ros::Publisher tpl_control_destination_back_pub_;
+
   Scanner scan_handler_;
   TplArbiter tpl_control_arbiter_;
   TplController tpl_control_handler_;
@@ -44,6 +52,11 @@ class ToolManagerNode
                            agribot_msgs::ToolManagerState::Response& res);            // NOLINT(runtime/references)
   bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,    // NOLINT(runtime/references)
                              agribot_msgs::ToolManagerControlSource::Response& res);  // NOLINT(runtime/references)
+
+  void cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
+  void cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
+  void cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
+  void cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
  public:
   ToolManagerNode(int argc, char** argv);
   ~ToolManagerNode();
