@@ -13,7 +13,7 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
 
   // Services
   tool_state_srv_ =
-      node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::stateRequestService, this);
+      node_handle_->advertiseService("agribot/tool_management_scan", &ToolManagerNode::stateRequestService, this);
   tpl_control_arbiter_srv_ = node_handle_->advertiseService("agribot/tool_management_control_source",
                                                             &ToolManagerNode::controlArbiterService, this);
   tags_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/tags");
@@ -56,7 +56,7 @@ void ToolManagerNode::QueueThread()
 }
 
 bool ToolManagerNode::checkErrCode(ReturnCode err,
-                                   agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
+                                   agribot_msgs::ToolManagerScan::Response& res)  // NOLINT(runtime/references)
 {
   if (err != ReturnCode::Success)
   {
@@ -97,8 +97,8 @@ ReturnCode ToolManagerNode::setPwrSrvCall(double pwr)
 }
 
 bool ToolManagerNode::performScanAndPwrAdjustments(
-    const agribot_msgs::ToolManagerState::Request& req,  // NOLINT(runtime/references)
-    agribot_msgs::ToolManagerState::Response& res)       // NOLINT(runtime/references)
+    const agribot_msgs::ToolManagerScan::Request& req,  // NOLINT(runtime/references)
+    agribot_msgs::ToolManagerScan::Response& res)       // NOLINT(runtime/references)
 {
   scan_handler_.setAnt(static_cast<Antenna>(req.requested_state));
   ROS_INFO_STREAM("[TOOL_MANAGER] Scan triggered for ant: " << static_cast<int>(scan_handler_.getAnt()));
@@ -123,13 +123,8 @@ bool ToolManagerNode::performScanAndPwrAdjustments(
   return true;
 }
 
-bool ToolManagerNode::setTpl()
-{
-  return true;
-}
-
-bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Request& req,   // NOLINT(runtime/references)
-                                          agribot_msgs::ToolManagerState::Response& res)  // NOLINT(runtime/references)
+bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerScan::Request& req,   // NOLINT(runtime/references)
+                                          agribot_msgs::ToolManagerScan::Response& res)  // NOLINT(runtime/references)
 {
   switch (req.requested_state)
   {
@@ -137,8 +132,6 @@ bool ToolManagerNode::stateRequestService(agribot_msgs::ToolManagerState::Reques
       return performScanAndPwrAdjustments(req, res);
     case req.SCAN_BACK:
       return performScanAndPwrAdjustments(req, res);
-    case req.SET_TPL:
-      return setTpl();
     default:
       break;
   }
@@ -159,8 +152,11 @@ bool ToolManagerNode::controlArbiterService(
       tpl_control_arbiter_.setTplControlSource(ControlSource::Navigation);
       res.result = res.SUCCESS;
       return true;
-    default:
+    case req.NONE:
       tpl_control_arbiter_.setTplControlSource(ControlSource::None);
+      res.result = res.SUCCESS;
+      return true;
+    default:
       res.result = res.FAIL;
       return false;
   }
@@ -194,13 +190,16 @@ void ToolManagerNode::cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::
 
 void ToolManagerNode::run()
 {
-  // AsyncSpinner is used to be able to
+  // AsyncSpinner is used to be able to call services from within other services (in scanner functionality)
   ros::AsyncSpinner spinner(2);
   spinner.start();
   ros::Rate rate(100);
   while (ros::ok())
   {
     auto [cfg_front, cfg_back] = tpl_control_handler_.getConfigsFrtBck(tpl_control_arbiter_.getTplControlSource());
+    ROS_ERROR_STREAM("[TOOL MANAGEMENT] angle: " << cfg_front.tpl_angle);
+    ROS_ERROR_STREAM("[TOOL MANAGEMENT] height: " << cfg_front.tpl_height);
+    ROS_ERROR_STREAM("[TOOL MANAGEMENT] red_valve_flow: " << cfg_front.red_valve_flow);
     ros::spinOnce();
     rate.sleep();
   }

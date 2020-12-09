@@ -19,7 +19,7 @@ void TplController::setConfig(ConfigIndex const idx, TplConfig const conf)
   tpl_config_[idx] = conf;
 }
 
-const std::tuple<TplConfig, TplConfig> TplController::getConfigsFrtBck(ControlSource src) const
+std::tuple<TplConfig, TplConfig> TplController::getConfigsFrtBck(ControlSource src) const
 {
   switch (src)
   {

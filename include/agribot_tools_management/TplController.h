@@ -53,6 +53,6 @@ class TplController
  public:
   TplController();
   void setConfig(ConfigIndex const idx, TplConfig const conf);
-  const std::tuple<TplConfig, TplConfig> getConfigsFrtBck(ControlSource src) const;
+  std::tuple<TplConfig, TplConfig> getConfigsFrtBck(ControlSource src) const;
 };
 }  // namespace tool_manager

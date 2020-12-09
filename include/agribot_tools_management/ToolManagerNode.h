@@ -11,7 +11,7 @@
 #include <ros/callback_queue.h>
 
 #include <agribot_msgs/Tags.h>
-#include <agribot_msgs/ToolManagerState.h>
+#include <agribot_msgs/ToolManagerScan.h>
 #include <agribot_msgs/ToolManagerControlSource.h>
 #include <agribot_msgs/AgribotTool.h>
 #include <agribot_msgs/RfidPower.h>
@@ -56,12 +56,11 @@ class ToolManagerNode
 
   ReturnCode getTagsSrvCall(std::vector<uint16_t>& detected_tags);  // NOLINT(runtime/references)
   ReturnCode setPwrSrvCall(double pwr);
-  bool performScanAndPwrAdjustments(const agribot_msgs::ToolManagerState::Request& req,  // NOLINT(runtime/references)
-                                    agribot_msgs::ToolManagerState::Response& res);      // NOLINT(runtime/references)
-  bool setTpl();
-  bool checkErrCode(ReturnCode err, agribot_msgs::ToolManagerState::Response& res);   // NOLINT(runtime/references)
-  bool stateRequestService(agribot_msgs::ToolManagerState::Request& req,              // NOLINT(runtime/references)
-                           agribot_msgs::ToolManagerState::Response& res);            // NOLINT(runtime/references)
+  bool performScanAndPwrAdjustments(const agribot_msgs::ToolManagerScan::Request& req,  // NOLINT(runtime/references)
+                                    agribot_msgs::ToolManagerScan::Response& res);      // NOLINT(runtime/references)
+  bool checkErrCode(ReturnCode err, agribot_msgs::ToolManagerScan::Response& res);   // NOLINT(runtime/references)
+  bool stateRequestService(agribot_msgs::ToolManagerScan::Request& req,              // NOLINT(runtime/references)
+                           agribot_msgs::ToolManagerScan::Response& res);            // NOLINT(runtime/references)
   bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,    // NOLINT(runtime/references)
                              agribot_msgs::ToolManagerControlSource::Response& res);  // NOLINT(runtime/references)
 
