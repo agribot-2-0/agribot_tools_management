@@ -6,15 +6,10 @@
 
 #include <string>
 #include <tuple>
+#include "agribot_tools_management/ControlSource.h"
 
 namespace tool_manager
 {
-enum class ControlSource
-{
-  Manual = 0,
-  Navigation = 1,
-  None = 2
-};
 class TplArbiter
 {
  private:
@@ -30,7 +25,7 @@ class TplArbiter
   ControlSource source_;
 
  public:
-  TplArbiter() : source_(ControlSource::None){};
+  TplArbiter() : source_(ControlSource::None){}
   void setTplControlSource(ControlSource const src);
   ControlSource getTplControlSource() const;
   std::tuple<std::string, std::string> getFrtBckSourceTopics(ControlSource const src) const;

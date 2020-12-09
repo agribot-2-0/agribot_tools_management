@@ -10,6 +10,8 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
 {
   ros::init(argc, argv, "agribot_tools_management_node");
   node_handle_ = std::make_shared<ros::NodeHandle>();
+
+  // Services
   tool_state_srv_ =
       node_handle_->advertiseService("agribot/tool_management_state", &ToolManagerNode::stateRequestService, this);
   tpl_control_arbiter_srv_ = node_handle_->advertiseService("agribot/tool_management_control_source",
@@ -17,12 +19,12 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
   tags_srv_client_ = node_handle_->serviceClient<agribot_msgs::Tags>("/agribot/rfid/tags");
   rfid_power_srv_client_ = node_handle_->serviceClient<agribot_msgs::RfidPower>("/agribot/rfid/antennas/power");
 
-  // TPL config publishers:
+  // TPL config publishers
   auto [topic_front, topic_back] = tpl_control_arbiter_.getFrtBckDestinationTopics();
   tpl_control_destination_front_pub_ = node_handle_->advertise<agribot_msgs::AgribotTool>(topic_front, 1);
   tpl_control_destination_back_pub_ = node_handle_->advertise<agribot_msgs::AgribotTool>(topic_back, 1);
 
-  // TPL config subs manual:
+  // TPL config subs manual
   std::tie(topic_front, topic_back) = tpl_control_arbiter_.getFrtBckSourceTopics(ControlSource::Manual);
   ros::SubscribeOptions sub_cmd_tool_front_man = ros::SubscribeOptions::create<agribot_msgs::AgribotTool>(
       topic_front, 1, boost::bind(&ToolManagerNode::cmdToolsFrontManualCallback, this, _1), ros::VoidPtr(), &queue_);
@@ -31,7 +33,7 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
   tpl_control_manual_topic_front_sub_ = node_handle_->subscribe(sub_cmd_tool_front_man);
   tpl_control_manual_topic_back_sub_ = node_handle_->subscribe(sub_cmd_tool_back_man);
 
-  // TPL config subs navi:
+  // TPL config subs navi
   std::tie(topic_front, topic_back) = tpl_control_arbiter_.getFrtBckSourceTopics(ControlSource::Navigation);
   ros::SubscribeOptions sub_cmd_tool_front_nav = ros::SubscribeOptions::create<agribot_msgs::AgribotTool>(
       topic_front, 1, boost::bind(&ToolManagerNode::cmdToolsFrontNaviCallback, this, _1), ros::VoidPtr(), &queue_);
@@ -39,6 +41,18 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
       topic_back, 1, boost::bind(&ToolManagerNode::cmdToolsBackNaviCallback, this, _1), ros::VoidPtr(), &queue_);
   tpl_control_navi_topic_front_sub_ = node_handle_->subscribe(sub_cmd_tool_front_nav);
   tpl_control_navi_topic_back_sub_ = node_handle_->subscribe(sub_cmd_tool_back_nav);
+
+  // Custom callback queue
+  this->callback_queue_thread_ = boost::thread(boost::bind(&ToolManagerNode::QueueThread, this));
+}
+
+void ToolManagerNode::QueueThread()
+{
+  static const double timeout = 0.01;
+  while (node_handle_->ok())
+  {
+    queue_.callAvailable(ros::WallDuration(timeout));
+  }
 }
 
 bool ToolManagerNode::checkErrCode(ReturnCode err,
@@ -152,35 +166,41 @@ bool ToolManagerNode::controlArbiterService(
   }
 }
 
+TplConfig ToolManagerNode::toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
+{
+  return { tool_msg->tpl_angle,        tool_msg->tpl_height,      tool_msg->red_valve_flow,
+           tool_msg->green_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
+}
+
 void ToolManagerNode::cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-
+  tpl_control_handler_.setConfig(ConfigIndex::FrontManual, toolMsgToTplConfig(tool_msg));
 }
 
 void ToolManagerNode::cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-
+  tpl_control_handler_.setConfig(ConfigIndex::BackManual, toolMsgToTplConfig(tool_msg));
 }
 
 void ToolManagerNode::cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-
+  tpl_control_handler_.setConfig(ConfigIndex::FrontNavi, toolMsgToTplConfig(tool_msg));
 }
 
 void ToolManagerNode::cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-
+  tpl_control_handler_.setConfig(ConfigIndex::BackNavi, toolMsgToTplConfig(tool_msg));
 }
-
 
 void ToolManagerNode::run()
 {
   // AsyncSpinner is used to be able to
   ros::AsyncSpinner spinner(2);
   spinner.start();
-  ros::Rate rate(10);
+  ros::Rate rate(100);
   while (ros::ok())
   {
+    auto [cfg_front, cfg_back] = tpl_control_handler_.getConfigsFrtBck(tpl_control_arbiter_.getTplControlSource());
     ros::spinOnce();
     rate.sleep();
   }

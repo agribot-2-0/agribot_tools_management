@@ -6,10 +6,11 @@
 
 namespace tool_manager
 {
-enum class ReturnCode  // TODO(mwiadoms): Add error codes concerning TPL set case
+enum class ReturnCode
 {
   Success = 0,
   TagsServiceError,
-  PowerServiceError
+  PowerServiceError,
+  ArbiterServiceError
 };
 }  // namespace tool_manager

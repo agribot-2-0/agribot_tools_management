@@ -33,5 +33,4 @@ std::tuple<std::string, std::string> TplArbiter::getFrtBckDestinationTopics() co
 {
   return { topic_names_.front_destinaton, topic_names_.back_destinaton };
 }
-
 }  // namespace tool_manager

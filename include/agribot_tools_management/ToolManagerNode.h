@@ -6,6 +6,9 @@
 
 #include <ros/ros.h>
 #include <ros/console.h>
+// Custom Callback Queue
+#include <ros/advertise_options.h>
+#include <ros/callback_queue.h>
 
 #include <agribot_msgs/Tags.h>
 #include <agribot_msgs/ToolManagerState.h>
@@ -15,10 +18,14 @@
 
 #include <vector>
 #include <memory>
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
 
 #include "agribot_tools_management/Scanner.h"
 #include "agribot_tools_management/TplController.h"
 #include "agribot_tools_management/TplArbiter.h"
+#include "agribot_tools_management/ReturnCode.h"
+#include "agribot_tools_management/ControlSource.h"
 
 namespace tool_manager
 {
@@ -42,6 +49,11 @@ class ToolManagerNode
   TplArbiter tpl_control_arbiter_;
   TplController tpl_control_handler_;
 
+  // Custom Callback Queue
+  ros::CallbackQueue queue_;
+  boost::thread callback_queue_thread_;
+  void QueueThread();
+
   ReturnCode getTagsSrvCall(std::vector<uint16_t>& detected_tags);  // NOLINT(runtime/references)
   ReturnCode setPwrSrvCall(double pwr);
   bool performScanAndPwrAdjustments(const agribot_msgs::ToolManagerState::Request& req,  // NOLINT(runtime/references)
@@ -53,6 +65,7 @@ class ToolManagerNode
   bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,    // NOLINT(runtime/references)
                              agribot_msgs::ToolManagerControlSource::Response& res);  // NOLINT(runtime/references)
 
+  TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
   void cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
   void cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
   void cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
