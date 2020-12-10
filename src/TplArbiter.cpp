@@ -16,6 +16,14 @@ ControlSource TplArbiter::getTplControlSource() const
   return source_;
 }
 
+bool TplArbiter::sourceSelected() const
+{
+  if(source_ != ControlSource::None)
+  {
+    return true;
+  }
+}
+
 std::tuple<std::string, std::string> TplArbiter::getFrtBckSourceTopics(ControlSource const src) const
 {
   switch (src)

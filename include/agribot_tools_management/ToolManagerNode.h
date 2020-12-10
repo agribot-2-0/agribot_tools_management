@@ -65,10 +65,14 @@ class ToolManagerNode
                              agribot_msgs::ToolManagerControlSource::Response& res);  // NOLINT(runtime/references)
 
   TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
+  void tplConfigToToolMsg(const TplConfig config, agribot_msgs::AgribotTool& tool_msg);
+  void republishControlMsg();
+
   void cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
   void cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
   void cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
   void cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
+
  public:
   ToolManagerNode(int argc, char** argv);
   ~ToolManagerNode();

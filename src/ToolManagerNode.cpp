@@ -168,6 +168,30 @@ TplConfig ToolManagerNode::toolMsgToTplConfig(const agribot_msgs::AgribotTool::C
            tool_msg->green_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
 }
 
+void ToolManagerNode::tplConfigToToolMsg(const TplConfig config, agribot_msgs::AgribotTool& tool_msg)
+{
+  tool_msg.tpl_angle = config.tpl_angle;
+  tool_msg.tpl_height = config.tpl_height;
+  tool_msg.red_valve_flow = config.red_valve_flow;
+  tool_msg.green_valve_flow = config.green_valve_flow;
+  tool_msg.blue_valve_flow = config.blue_valve_flow;
+  tool_msg.pto_rpm = config.pto_rpm;
+}
+
+void ToolManagerNode::republishControlMsg()
+{
+  if(!tpl_control_arbiter_.sourceSelected())
+  {
+    return;
+  }
+  agribot_msgs::AgribotTool msg;
+  auto [cfg_front, cfg_back] = tpl_control_handler_.getConfigsFrtBck(tpl_control_arbiter_.getTplControlSource());
+  tplConfigToToolMsg(cfg_front, msg);
+  tpl_control_destination_front_pub_.publish(msg);
+  tplConfigToToolMsg(cfg_back, msg);
+  tpl_control_destination_back_pub_.publish(msg);
+}
+
 void ToolManagerNode::cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
   tpl_control_handler_.setConfig(ConfigIndex::FrontManual, toolMsgToTplConfig(tool_msg));
@@ -196,10 +220,7 @@ void ToolManagerNode::run()
   ros::Rate rate(100);
   while (ros::ok())
   {
-    auto [cfg_front, cfg_back] = tpl_control_handler_.getConfigsFrtBck(tpl_control_arbiter_.getTplControlSource());
-    ROS_ERROR_STREAM("[TOOL MANAGEMENT] angle: " << cfg_front.tpl_angle);
-    ROS_ERROR_STREAM("[TOOL MANAGEMENT] height: " << cfg_front.tpl_height);
-    ROS_ERROR_STREAM("[TOOL MANAGEMENT] red_valve_flow: " << cfg_front.red_valve_flow);
+    republishControlMsg();
     ros::spinOnce();
     rate.sleep();
   }

@@ -28,6 +28,7 @@ class TplArbiter
   TplArbiter() : source_(ControlSource::None){}
   void setTplControlSource(ControlSource const src);
   ControlSource getTplControlSource() const;
+  bool sourceSelected() const;
   std::tuple<std::string, std::string> getFrtBckSourceTopics(ControlSource const src) const;
   std::tuple<std::string, std::string> getFrtBckDestinationTopics() const;
 };
