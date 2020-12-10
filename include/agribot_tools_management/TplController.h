@@ -6,25 +6,12 @@
 
 #include <unordered_map>
 #include <tuple>
+
 #include "agribot_tools_management/ControlSource.h"
+#include "agribot_tools_management/ConfigIndex.h"
 
 namespace tool_manager
 {
-enum class ConfigIndex
-{
-  FrontManual = 0,
-  BackManual = 1,
-  FrontNavi = 2,
-  BackNavi = 3
-};
-class HashConf
-{
- public:
-  std::size_t operator()(const ConfigIndex& idx) const
-  {
-    return static_cast<std::size_t>(idx);
-  }
-};
 struct TplConfig
 {
   double tpl_angle = 0.0;

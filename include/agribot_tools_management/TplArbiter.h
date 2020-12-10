@@ -5,11 +5,16 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 #include <tuple>
+
 #include "agribot_tools_management/ControlSource.h"
+#include "agribot_tools_management/ConfigIndex.h"
 
 namespace tool_manager
 {
+constexpr int timeout_val = 100;  // 1s with rate=100
+
 class TplArbiter
 {
  private:
@@ -23,12 +28,17 @@ class TplArbiter
     std::string back_destinaton = "/agribot/control/tool/back";
   } topic_names_;
   ControlSource source_;
+  std::unordered_map<ConfigIndex, int, HashConf> timeout_;
 
+  void incrementTimeoutCnts();
  public:
-  TplArbiter() : source_(ControlSource::None){}
+  TplArbiter();
   void setTplControlSource(ControlSource const src);
   ControlSource getTplControlSource() const;
   bool sourceSelected() const;
+  void monitorResetTimeoutCnt(ConfigIndex const idx);
+  void monitorResetTimeoutCnts();
+  bool monitorCheckTimeouts();
   std::tuple<std::string, std::string> getFrtBckSourceTopics(ControlSource const src) const;
   std::tuple<std::string, std::string> getFrtBckDestinationTopics() const;
 };

@@ -6,6 +6,14 @@
 
 namespace tool_manager
 {
+TplArbiter::TplArbiter() : source_(ControlSource::None)
+{
+  timeout_[ConfigIndex::FrontManual] = 0;
+  timeout_[ConfigIndex::BackManual] = 0;
+  timeout_[ConfigIndex::FrontNavi] = 0;
+  timeout_[ConfigIndex::BackNavi] = 0;
+}
+
 void TplArbiter::setTplControlSource(ControlSource const src)
 {
   source_ = src;
@@ -18,10 +26,54 @@ ControlSource TplArbiter::getTplControlSource() const
 
 bool TplArbiter::sourceSelected() const
 {
-  if(source_ != ControlSource::None)
+  return source_ != ControlSource::None;
+}
+
+void TplArbiter::incrementTimeoutCnts()
+{
+  switch (source_)
   {
-    return true;
+    case ControlSource::Manual:
+      timeout_[ConfigIndex::FrontManual] += 1;
+      timeout_[ConfigIndex::BackManual] += 1;
+      break;
+    case ControlSource::Navigation:
+      timeout_[ConfigIndex::FrontNavi] += 1;
+      timeout_[ConfigIndex::BackNavi] += 1;
+      break;
   }
+}
+
+void TplArbiter::monitorResetTimeoutCnt(ConfigIndex const idx)
+{
+  timeout_[idx] = 0;
+}
+
+void TplArbiter::monitorResetTimeoutCnts()
+{
+  for (auto& it : timeout_)
+  {
+    TplArbiter::monitorResetTimeoutCnt(it.first);
+  }
+}
+
+bool TplArbiter::monitorCheckTimeouts()
+{
+  incrementTimeoutCnts();
+
+  for (auto& it : timeout_)
+  {
+    // if there is no controll message on selected topic for more than one second
+    if (it.second > timeout_val)
+    {
+      // set control source to none
+      source_ = ControlSource::None;
+      // and reset counters
+      TplArbiter::monitorResetTimeoutCnts();
+      return false;
+    }
+  }
+  return true;
 }
 
 std::tuple<std::string, std::string> TplArbiter::getFrtBckSourceTopics(ControlSource const src) const

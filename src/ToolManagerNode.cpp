@@ -142,6 +142,7 @@ bool ToolManagerNode::controlArbiterService(
     agribot_msgs::ToolManagerControlSource::Request& req,   // NOLINT(runtime/references)
     agribot_msgs::ToolManagerControlSource::Response& res)  // NOLINT(runtime/references)
 {
+  tpl_control_arbiter_.monitorResetTimeoutCnts();
   switch (req.source)
   {
     case req.MANUAL:
@@ -180,10 +181,6 @@ void ToolManagerNode::tplConfigToToolMsg(const TplConfig config, agribot_msgs::A
 
 void ToolManagerNode::republishControlMsg()
 {
-  if(!tpl_control_arbiter_.sourceSelected())
-  {
-    return;
-  }
   agribot_msgs::AgribotTool msg;
   auto [cfg_front, cfg_back] = tpl_control_handler_.getConfigsFrtBck(tpl_control_arbiter_.getTplControlSource());
   tplConfigToToolMsg(cfg_front, msg);
@@ -195,21 +192,25 @@ void ToolManagerNode::republishControlMsg()
 void ToolManagerNode::cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
   tpl_control_handler_.setConfig(ConfigIndex::FrontManual, toolMsgToTplConfig(tool_msg));
+  tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::FrontManual);
 }
 
 void ToolManagerNode::cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
   tpl_control_handler_.setConfig(ConfigIndex::BackManual, toolMsgToTplConfig(tool_msg));
+  tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::BackManual);
 }
 
 void ToolManagerNode::cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
   tpl_control_handler_.setConfig(ConfigIndex::FrontNavi, toolMsgToTplConfig(tool_msg));
+  tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::FrontNavi);
 }
 
 void ToolManagerNode::cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
   tpl_control_handler_.setConfig(ConfigIndex::BackNavi, toolMsgToTplConfig(tool_msg));
+  tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::BackNavi);
 }
 
 void ToolManagerNode::run()
@@ -220,7 +221,11 @@ void ToolManagerNode::run()
   ros::Rate rate(100);
   while (ros::ok())
   {
-    republishControlMsg();
+    if(tpl_control_arbiter_.sourceSelected())
+    {
+      republishControlMsg();
+      tpl_control_arbiter_.monitorCheckTimeouts();
+    }
     ros::spinOnce();
     rate.sleep();
   }

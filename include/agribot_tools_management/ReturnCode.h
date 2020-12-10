@@ -10,7 +10,6 @@ enum class ReturnCode
 {
   Success = 0,
   TagsServiceError,
-  PowerServiceError,
-  ArbiterServiceError
+  PowerServiceError
 };
 }  // namespace tool_manager
