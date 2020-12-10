@@ -57,7 +57,7 @@ void TplArbiter::monitorResetTimeoutCnts()
   }
 }
 
-bool TplArbiter::monitorCheckTimeouts()
+bool TplArbiter::timeoutsExceeded()
 {
   incrementTimeoutCnts();
 
@@ -70,10 +70,10 @@ bool TplArbiter::monitorCheckTimeouts()
       source_ = ControlSource::None;
       // and reset counters
       TplArbiter::monitorResetTimeoutCnts();
-      return false;
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
 std::tuple<std::string, std::string> TplArbiter::getFrtBckSourceTopics(ControlSource const src) const

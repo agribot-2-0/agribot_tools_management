@@ -221,10 +221,13 @@ void ToolManagerNode::run()
   ros::Rate rate(100);
   while (ros::ok())
   {
-    if(tpl_control_arbiter_.sourceSelected())
+    if (tpl_control_arbiter_.sourceSelected())
     {
       republishControlMsg();
-      tpl_control_arbiter_.monitorCheckTimeouts();
+      if (tpl_control_arbiter_.timeoutsExceeded())
+      {
+        ROS_ERROR_STREAM("[TOOL MANAGEMENT] TPL control topic inactivity timeout");
+      }
     }
     ros::spinOnce();
     rate.sleep();

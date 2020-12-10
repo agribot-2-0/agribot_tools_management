@@ -38,7 +38,7 @@ class TplArbiter
   bool sourceSelected() const;
   void monitorResetTimeoutCnt(ConfigIndex const idx);
   void monitorResetTimeoutCnts();
-  bool monitorCheckTimeouts();
+  bool timeoutsExceeded();
   std::tuple<std::string, std::string> getFrtBckSourceTopics(ControlSource const src) const;
   std::tuple<std::string, std::string> getFrtBckDestinationTopics() const;
 };

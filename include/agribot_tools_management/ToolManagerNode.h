@@ -58,14 +58,14 @@ class ToolManagerNode
   ReturnCode setPwrSrvCall(double pwr);
   bool performScanAndPwrAdjustments(const agribot_msgs::ToolManagerScan::Request& req,  // NOLINT(runtime/references)
                                     agribot_msgs::ToolManagerScan::Response& res);      // NOLINT(runtime/references)
-  bool checkErrCode(ReturnCode err, agribot_msgs::ToolManagerScan::Response& res);   // NOLINT(runtime/references)
-  bool stateRequestService(agribot_msgs::ToolManagerScan::Request& req,              // NOLINT(runtime/references)
-                           agribot_msgs::ToolManagerScan::Response& res);            // NOLINT(runtime/references)
-  bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,    // NOLINT(runtime/references)
-                             agribot_msgs::ToolManagerControlSource::Response& res);  // NOLINT(runtime/references)
+  bool checkErrCode(ReturnCode err, agribot_msgs::ToolManagerScan::Response& res);      // NOLINT(runtime/references)
+  bool stateRequestService(agribot_msgs::ToolManagerScan::Request& req,                 // NOLINT(runtime/references)
+                           agribot_msgs::ToolManagerScan::Response& res);               // NOLINT(runtime/references)
+  bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,      // NOLINT(runtime/references)
+                             agribot_msgs::ToolManagerControlSource::Response& res);    // NOLINT(runtime/references)
 
   TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
-  void tplConfigToToolMsg(const TplConfig config, agribot_msgs::AgribotTool& tool_msg);
+  void tplConfigToToolMsg(const TplConfig& config, agribot_msgs::AgribotTool& tool_msg);  // NOLINT(runtime/references)
   void republishControlMsg();
 
   void cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
