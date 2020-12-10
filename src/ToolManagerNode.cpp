@@ -163,13 +163,13 @@ bool ToolManagerNode::controlArbiterService(
   }
 }
 
-TplConfig ToolManagerNode::toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
+TplConfig ToolManagerNode::toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg) const
 {
   return { tool_msg->tpl_angle,        tool_msg->tpl_height,      tool_msg->red_valve_flow,
            tool_msg->green_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
 }
 
-void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::AgribotTool& tool_msg)
+void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::AgribotTool& tool_msg) const
 {
   tool_msg.tpl_angle = config.tpl_angle;
   tool_msg.tpl_height = config.tpl_height;
@@ -179,7 +179,7 @@ void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::
   tool_msg.pto_rpm = config.pto_rpm;
 }
 
-void ToolManagerNode::republishControlMsg()
+void ToolManagerNode::republishControlMsg() const
 {
   agribot_msgs::AgribotTool msg;
   auto [cfg_front, cfg_back] = tpl_control_handler_.getConfigsFrtBck(tpl_control_arbiter_.getTplControlSource());

@@ -64,9 +64,10 @@ class ToolManagerNode
   bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,      // NOLINT(runtime/references)
                              agribot_msgs::ToolManagerControlSource::Response& res);    // NOLINT(runtime/references)
 
-  TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
-  void tplConfigToToolMsg(const TplConfig& config, agribot_msgs::AgribotTool& tool_msg);  // NOLINT(runtime/references)
-  void republishControlMsg();
+  TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg) const;
+  void tplConfigToToolMsg(const TplConfig& config,
+                          agribot_msgs::AgribotTool& tool_msg) const;  // NOLINT(runtime/references)
+  void republishControlMsg() const;
 
   void cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
   void cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
