@@ -148,7 +148,7 @@ bool ToolManagerNode::controlArbiterService(
     case req.MANUAL:
       tpl_control_arbiter_.setTplControlSource(ControlSource::Manual);
       res.result = res.SUCCESS;
-      ROS_INFO_STREAM("[ToolManagement] Control source changed to Navigation");
+      ROS_INFO_STREAM("[ToolManagement] Control source changed to Manual");
       return true;
     case req.NAVIGATION:
       tpl_control_arbiter_.setTplControlSource(ControlSource::Navigation);
