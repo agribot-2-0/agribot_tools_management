@@ -61,7 +61,7 @@ bool ToolManagerNode::checkErrCode(ReturnCode err,
   if (err != ReturnCode::Success)
   {
     res.result = res.FAIL;
-    ROS_ERROR_STREAM("[TOOL MANAGEMENT] Request failed with error code: " << static_cast<int>(err));
+    ROS_ERROR_STREAM("[ToolManagement] Request failed with error code: " << static_cast<int>(err));
     return false;
   }
   res.result = res.SUCCESS;
@@ -101,14 +101,14 @@ bool ToolManagerNode::performScanAndPwrAdjustments(
     agribot_msgs::ToolManagerScan::Response& res)       // NOLINT(runtime/references)
 {
   scan_handler_.setAnt(static_cast<Antenna>(req.requested_state));
-  ROS_INFO_STREAM("[TOOL_MANAGER] Scan triggered for ant: " << static_cast<int>(scan_handler_.getAnt()));
+  ROS_INFO_STREAM("[ToolManagement] Scan triggered for ant: " << static_cast<int>(scan_handler_.getAnt()));
   while (!scan_handler_.entirePowerRangeInspected())
   {
     if (!checkErrCode(getTagsSrvCall(res.ids), res))  // if there is sth wrong with tags service
     {
       return false;
     }
-    ROS_INFO_STREAM("[TOOL_MANAGER] Tags detected: " << static_cast<int>(res.ids.size()));
+    ROS_INFO_STREAM("[ToolManagement] Tags detected: " << static_cast<int>(res.ids.size()));
     scan_handler_.setTagsCnt(res.ids.size());
     if (scan_handler_.scanCorrect())
     {
@@ -148,14 +148,17 @@ bool ToolManagerNode::controlArbiterService(
     case req.MANUAL:
       tpl_control_arbiter_.setTplControlSource(ControlSource::Manual);
       res.result = res.SUCCESS;
+      ROS_INFO_STREAM("[ToolManagement] Control source changed to Navigation");
       return true;
     case req.NAVIGATION:
       tpl_control_arbiter_.setTplControlSource(ControlSource::Navigation);
       res.result = res.SUCCESS;
+      ROS_INFO_STREAM("[ToolManagement] Control source changed to Navigation");
       return true;
     case req.NONE:
       tpl_control_arbiter_.setTplControlSource(ControlSource::None);
       res.result = res.SUCCESS;
+      ROS_INFO_STREAM("[ToolManagement] Control source changed to None");
       return true;
     default:
       res.result = res.FAIL;
@@ -226,7 +229,7 @@ void ToolManagerNode::run()
       republishControlMsg();
       if (tpl_control_arbiter_.timeoutsExceeded())
       {
-        ROS_ERROR_STREAM("[TOOL MANAGEMENT] TPL control topic inactivity timeout");
+        ROS_ERROR_STREAM("[ToolManagement] TPL control topic inactivity timeout");
       }
     }
     ros::spinOnce();
