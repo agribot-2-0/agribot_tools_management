@@ -2,7 +2,7 @@
  * Copyright (C) 2020 Agribot. All rights reserved.
  */
 
-#include "agribot_tools_management/TplController.h"
+#include "agribot_tools_management/tpl_control/TplController.h"
 
 namespace tool_manager
 {
@@ -19,7 +19,7 @@ void TplController::setConfig(ConfigIndex const idx, TplConfig const conf)
   tpl_config_[idx] = conf;
 }
 
-std::tuple<TplConfig, TplConfig> TplController::getConfigsFrtBck(ControlSource src) const
+std::tuple<TplConfig, TplConfig> TplController::getConfigsFrontBack(ControlSource src) const
 {
   switch (src)
   {

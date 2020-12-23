@@ -8,8 +8,8 @@
 #include <unordered_map>
 #include <tuple>
 
-#include "agribot_tools_management/ControlSource.h"
-#include "agribot_tools_management/ConfigIndex.h"
+#include "agribot_tools_management/common/ControlSource.h"
+#include "agribot_tools_management/common/ConfigIndex.h"
 
 namespace tool_manager
 {

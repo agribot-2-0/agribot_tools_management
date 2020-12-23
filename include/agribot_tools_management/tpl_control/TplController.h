@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <tuple>
 
-#include "agribot_tools_management/ControlSource.h"
-#include "agribot_tools_management/ConfigIndex.h"
+#include "agribot_tools_management/common/ControlSource.h"
+#include "agribot_tools_management/common/ConfigIndex.h"
 
 namespace tool_manager
 {
@@ -40,6 +40,6 @@ class TplController
  public:
   TplController();
   void setConfig(ConfigIndex const idx, TplConfig const conf);
-  std::tuple<TplConfig, TplConfig> getConfigsFrtBck(ControlSource src) const;
+  std::tuple<TplConfig, TplConfig> getConfigsFrontBack(ControlSource src) const;
 };
 }  // namespace tool_manager

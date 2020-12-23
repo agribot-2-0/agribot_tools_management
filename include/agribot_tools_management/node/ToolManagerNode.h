@@ -21,11 +21,11 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
-#include "agribot_tools_management/Scanner.h"
-#include "agribot_tools_management/TplController.h"
-#include "agribot_tools_management/TplArbiter.h"
-#include "agribot_tools_management/ReturnCode.h"
-#include "agribot_tools_management/ControlSource.h"
+#include "agribot_tools_management/scanner/Scanner.h"
+#include "agribot_tools_management/tpl_control/TplController.h"
+#include "agribot_tools_management/tpl_control/TplArbiter.h"
+#include "agribot_tools_management/common/ReturnCode.h"
+#include "agribot_tools_management/common/ControlSource.h"
 
 namespace tool_manager
 {

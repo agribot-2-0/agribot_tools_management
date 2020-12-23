@@ -41,7 +41,7 @@ include_directories(
 )
 
 link_directories("${PROJECT_SOURCE_DIR}")
-add_executable(agribot_tools_management_node src/ToolManagerNode.cpp src/Scanner.cpp src/TplController.cpp src/TplArbiter.cpp src/tool_manager_node.cpp )
+add_executable(agribot_tools_management_node src/node/ToolManagerNode.cpp src/scanner/Scanner.cpp src/tpl_control/TplController.cpp src/tpl_control/TplArbiter.cpp src/node/tool_manager_node.cpp )
 target_link_libraries(agribot_tools_management_node ${catkin_LIBRARIES})
 add_dependencies(agribot_tools_management_node ${catkin_EXPORTED_TARGETS})
 
