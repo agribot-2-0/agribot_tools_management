@@ -10,8 +10,8 @@ TplController::TplController()
 {
   tpl_config_[ConfigIndex::FrontManual] = TplConfig();
   tpl_config_[ConfigIndex::BackManual] = TplConfig();
-  tpl_config_[ConfigIndex::FrontNavi] = TplConfig();
-  tpl_config_[ConfigIndex::BackNavi] = TplConfig();
+  tpl_config_[ConfigIndex::FrontNavigation] = TplConfig();
+  tpl_config_[ConfigIndex::BackNavigation] = TplConfig();
 }
 
 void TplController::setConfig(ConfigIndex const idx, TplConfig const conf)
@@ -26,7 +26,7 @@ std::tuple<TplConfig, TplConfig> TplController::getConfigsFrtBck(ControlSource s
     case ControlSource::Manual:
       return { tpl_config_.at(ConfigIndex::FrontManual), tpl_config_.at(ConfigIndex::BackManual) };
     case ControlSource::Navigation:
-      return { tpl_config_.at(ConfigIndex::FrontNavi), tpl_config_.at(ConfigIndex::BackNavi) };
+      return { tpl_config_.at(ConfigIndex::FrontNavigation), tpl_config_.at(ConfigIndex::BackNavigation) };
     default:
       return { TplConfig(), TplConfig() };
   }

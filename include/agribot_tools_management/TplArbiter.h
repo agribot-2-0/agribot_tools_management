@@ -13,8 +13,7 @@
 
 namespace tool_manager
 {
-constexpr int timeout_val = 100;  // 1s with rate=100
-
+constexpr float sec_to_ms = 0.01;
 class TplArbiter
 {
  private:
@@ -28,18 +27,20 @@ class TplArbiter
     std::string back_destinaton = "/agribot/control/tool/back";
   } topic_names_;
   ControlSource source_;
+  int timeout_val_;
   std::unordered_map<ConfigIndex, int, HashConf> timeout_;
 
   void incrementTimeoutCnts();
  public:
   TplArbiter();
+  void setTimeout(int timeout, int loop_rate);
   void setTplControlSource(ControlSource const src);
   ControlSource getTplControlSource() const;
   bool sourceSelected() const;
   void monitorResetTimeoutCnt(ConfigIndex const idx);
   void monitorResetTimeoutCnts();
   bool timeoutsExceeded();
-  std::tuple<std::string, std::string> getFrtBckSourceTopics(ControlSource const src) const;
-  std::tuple<std::string, std::string> getFrtBckDestinationTopics() const;
+  std::tuple<std::string, std::string> getFrontBackSourceTopics(ControlSource const src) const;
+  std::tuple<std::string, std::string> getFrontBackDestinationTopics() const;
 };
 }  // namespace tool_manager

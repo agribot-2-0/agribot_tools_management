@@ -10,8 +10,13 @@ TplArbiter::TplArbiter() : source_(ControlSource::None)
 {
   timeout_[ConfigIndex::FrontManual] = 0;
   timeout_[ConfigIndex::BackManual] = 0;
-  timeout_[ConfigIndex::FrontNavi] = 0;
-  timeout_[ConfigIndex::BackNavi] = 0;
+  timeout_[ConfigIndex::FrontNavigation] = 0;
+  timeout_[ConfigIndex::FrontNavigation] = 0;
+}
+
+void TplArbiter::setTimeout(int timeout, int loop_rate)
+{
+  timeout_val_ = (timeout*loop_rate)*sec_to_ms;
 }
 
 void TplArbiter::setTplControlSource(ControlSource const src)
@@ -38,8 +43,8 @@ void TplArbiter::incrementTimeoutCnts()
       timeout_[ConfigIndex::BackManual] += 1;
       break;
     case ControlSource::Navigation:
-      timeout_[ConfigIndex::FrontNavi] += 1;
-      timeout_[ConfigIndex::BackNavi] += 1;
+      timeout_[ConfigIndex::FrontNavigation] += 1;
+      timeout_[ConfigIndex::BackNavigation] += 1;
       break;
   }
 }
@@ -51,9 +56,9 @@ void TplArbiter::monitorResetTimeoutCnt(ConfigIndex const idx)
 
 void TplArbiter::monitorResetTimeoutCnts()
 {
-  for (auto& it : timeout_)
+  for (const auto& [timeout_index, timeout_value] : timeout_)
   {
-    TplArbiter::monitorResetTimeoutCnt(it.first);
+    TplArbiter::monitorResetTimeoutCnt(timeout_index);
   }
 }
 
@@ -64,7 +69,7 @@ bool TplArbiter::timeoutsExceeded()
   for (auto& it : timeout_)
   {
     // if there is no controll message on selected topic for more than one second
-    if (it.second > timeout_val)
+    if (it.second > timeout_val_)
     {
       // and reset counters
       TplArbiter::monitorResetTimeoutCnts();
@@ -74,7 +79,7 @@ bool TplArbiter::timeoutsExceeded()
   return false;
 }
 
-std::tuple<std::string, std::string> TplArbiter::getFrtBckSourceTopics(ControlSource const src) const
+std::tuple<std::string, std::string> TplArbiter::getFrontBackSourceTopics(ControlSource const src) const
 {
   switch (src)
   {
@@ -87,7 +92,7 @@ std::tuple<std::string, std::string> TplArbiter::getFrtBckSourceTopics(ControlSo
   }
 }
 
-std::tuple<std::string, std::string> TplArbiter::getFrtBckDestinationTopics() const
+std::tuple<std::string, std::string> TplArbiter::getFrontBackDestinationTopics() const
 {
   return { topic_names_.front_destinaton, topic_names_.back_destinaton };
 }

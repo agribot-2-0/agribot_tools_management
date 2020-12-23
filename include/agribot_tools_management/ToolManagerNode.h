@@ -32,6 +32,7 @@ namespace tool_manager
 class ToolManagerNode
 {
  private:
+  int ros_loop_rate_ = 10;
   std::shared_ptr<ros::NodeHandle> node_handle_;
   ros::ServiceServer tool_state_srv_;
   ros::ServiceServer tpl_control_arbiter_srv_;

@@ -8,8 +8,8 @@ enum class ConfigIndex
 {
   FrontManual = 0,
   BackManual = 1,
-  FrontNavi = 2,
-  BackNavi = 3
+  FrontNavigation = 2,
+  BackNavigation = 3
 };
 class HashConf
 {
