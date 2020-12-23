@@ -66,8 +66,6 @@ bool TplArbiter::timeoutsExceeded()
     // if there is no controll message on selected topic for more than one second
     if (it.second > timeout_val)
     {
-      // set control source to none
-      source_ = ControlSource::None;
       // and reset counters
       TplArbiter::monitorResetTimeoutCnts();
       return true;

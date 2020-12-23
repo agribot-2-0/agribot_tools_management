@@ -148,17 +148,17 @@ bool ToolManagerNode::controlArbiterService(
     case req.MANUAL:
       tpl_control_arbiter_.setTplControlSource(ControlSource::Manual);
       res.result = res.SUCCESS;
-      ROS_INFO_STREAM("[ToolManagement] Control source changed to Manual");
+      ROS_WARN_STREAM("[ToolManagement] Control source changed to Manual");
       return true;
     case req.NAVIGATION:
       tpl_control_arbiter_.setTplControlSource(ControlSource::Navigation);
       res.result = res.SUCCESS;
-      ROS_INFO_STREAM("[ToolManagement] Control source changed to Navigation");
+      ROS_WARN_STREAM("[ToolManagement] Control source changed to Navigation");
       return true;
     case req.NONE:
       tpl_control_arbiter_.setTplControlSource(ControlSource::None);
       res.result = res.SUCCESS;
-      ROS_INFO_STREAM("[ToolManagement] Control source changed to None");
+      ROS_WARN_STREAM("[ToolManagement] Control source changed to None");
       return true;
     default:
       res.result = res.FAIL;
@@ -229,6 +229,8 @@ void ToolManagerNode::run()
       republishControlMsg();
       if (tpl_control_arbiter_.timeoutsExceeded())
       {
+        tpl_control_arbiter_.setTplControlSource(ControlSource::None);
+        ROS_WARN_STREAM("[ToolManagement] Control source changed to None");
         ROS_ERROR_STREAM("[ToolManagement] TPL control topic inactivity timeout");
       }
     }
