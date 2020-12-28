@@ -16,6 +16,7 @@
 #include <agribot_msgs/AgribotTool.h>
 #include <agribot_msgs/RfidPower.h>
 
+#include <string>
 #include <vector>
 #include <memory>
 #include <boost/bind.hpp>
