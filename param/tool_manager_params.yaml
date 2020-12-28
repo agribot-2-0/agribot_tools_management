@@ -1,1 +1,1 @@
-tpl_arbiter_timeout: 100.0 # 100ms
+tpl_arbiter_timeout: 100.0 # [ms]

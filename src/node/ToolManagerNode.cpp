@@ -44,7 +44,7 @@ ToolManagerNode::ToolManagerNode(int argc, char** argv)
 
   // Set timeout for the arbiter
   int timeout;
-  node_handle_->param<int>("/tpl_arbiter_timeout", timeout, 100);  // 100ms
+  node_handle_->param<int>("/tpl_arbiter_timeout", timeout, 100);  // [ms]
   tpl_control_arbiter_.setTimeout(timeout, ros_loop_rate_);
 
   // Custom callback queue
