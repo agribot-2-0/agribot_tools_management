@@ -15,9 +15,9 @@ state_machine->tool_manager:call service\nagribot/tool_management_control/source
 tool_manager-->state_machine: return service\nagribot/tool_management_control/source=success
 loop while mode != None || config message not present for 1s 
 alt mode == MANUAL
-hal_mobile_app->tool_manager:publish configs on /agribot/control/tool/front_manual\nand /agribot/control/tool/back_manual
+hal_mobile_app->tool_manager:publish configs on /agribot/control/tool/front/manual\nand /agribot/control/tool/back/manual
 else mode == NAVIGATION
-agribot_navigation->tool_manager:publish configs on /agribot/control/tool/front_navigation\nand /agribot/control/tool/back_navigation
+agribot_navigation->tool_manager:publish configs on /agribot/control/tool/front/navigation\nand /agribot/control/tool/back/navigation
 end
 
 tool_manager->hal_agribot_control: republish configs on /agribot/control/tool/front\nand /agribot/control/tool/back

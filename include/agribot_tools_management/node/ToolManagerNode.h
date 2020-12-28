@@ -55,6 +55,7 @@ class ToolManagerNode
   boost::thread callback_queue_thread_;
   void QueueThread();
 
+  std::string retCodeToString(ReturnCode ret);
   ReturnCode getTagsSrvCall(std::vector<uint16_t>& detected_tags);  // NOLINT(runtime/references)
   ReturnCode setPwrSrvCall(double pwr);
   bool performScanAndPwrAdjustments(const agribot_msgs::ToolManagerScan::Request& req,  // NOLINT(runtime/references)

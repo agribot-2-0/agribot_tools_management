@@ -60,13 +60,28 @@ void ToolManagerNode::QueueThread()
   }
 }
 
+std::string ToolManagerNode::retCodeToString(ReturnCode ret)
+{
+  switch (ret)
+  {
+    case ReturnCode::Success:
+      return "Success";
+    case ReturnCode::TagsServiceError:
+      return "TagsServiceError";
+    case ReturnCode::PowerServiceError:
+      return "PowerServiceError";
+    default:
+      return "Unknown error";
+  }
+}
+
 bool ToolManagerNode::checkErrCode(ReturnCode err,
                                    agribot_msgs::ToolManagerScan::Response& res)  // NOLINT(runtime/references)
 {
   if (err != ReturnCode::Success)
   {
     res.result = res.FAIL;
-    ROS_ERROR_STREAM("[ToolManagement] Request failed with error code: " << static_cast<int>(err));
+    ROS_ERROR_STREAM("[ToolManagement] Request failed with error: " << retCodeToString(err));
     return false;
   }
   res.result = res.SUCCESS;

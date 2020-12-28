@@ -66,10 +66,10 @@ bool TplArbiter::timeoutsExceeded()
 {
   incrementTimeoutCnts();
 
-  for (auto& it : timeout_)
+  for (const auto& [timeout_index, timeout_value] : timeout_)
   {
     // if there is no controll message on selected topic for more than one second
-    if (it.second > timeout_val_)
+    if (timeout_value > timeout_val_)
     {
       // and reset counters
       TplArbiter::monitorResetTimeoutCnts();
