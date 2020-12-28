@@ -71,6 +71,7 @@ double Scanner::adjustPower()
   {
     decreaseAntennaPower();  // decrease power, if more than one tag detected
   }
+  return pwr_[ant_];
 }
 
 }  // namespace tool_manager
