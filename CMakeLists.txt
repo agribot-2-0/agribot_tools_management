@@ -4,6 +4,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(agribot_tools_management)
 
+add_compile_options(-std=c++17)
+
 #############################################################################
 ## Find catkin packages and libraries for catkin and system dependencies   ##
 #############################################################################
@@ -39,7 +41,7 @@ include_directories(
 )
 
 link_directories("${PROJECT_SOURCE_DIR}")
-add_executable(agribot_tools_management_node src/ToolManagerNode.cpp src/Scanner.cpp src/TplController.cpp src/tool_manager_node.cpp)
+add_executable(agribot_tools_management_node src/node/ToolManagerNode.cpp src/scanner/Scanner.cpp src/tpl_control/TplController.cpp src/tpl_control/TplArbiter.cpp src/node/tool_manager_node.cpp )
 target_link_libraries(agribot_tools_management_node ${catkin_LIBRARIES})
 add_dependencies(agribot_tools_management_node ${catkin_EXPORTED_TARGETS})
 
@@ -53,7 +55,7 @@ install(TARGETS
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 
-install(DIRECTORY launch
+install(DIRECTORY launch param
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   PATTERN ".svn" EXCLUDE
 )

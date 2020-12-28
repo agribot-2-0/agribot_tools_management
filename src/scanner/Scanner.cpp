@@ -2,7 +2,7 @@
  * Copyright (C) 2020 Agribot. All rights reserved.
  */
 
-#include "agribot_tools_management/Scanner.h"
+#include "agribot_tools_management/scanner/Scanner.h"
 
 namespace tool_manager
 {

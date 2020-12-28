@@ -6,10 +6,10 @@
 
 namespace tool_manager
 {
-class TplController
+enum class ReturnCode
 {
- public:
-  TplController();
-  void perform();
+  Success = 0,
+  TagsServiceError,
+  PowerServiceError
 };
 }  // namespace tool_manager

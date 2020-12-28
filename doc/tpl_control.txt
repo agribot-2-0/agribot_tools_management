@@ -1,0 +1,28 @@
+@startuml
+title tool tpl control
+
+participant hal_mobile_app
+participant agribot_navigation
+participant state_machine
+participant tool_manager
+participant hal_agribot_control
+participant TPLs
+
+note over tool_manager:tool_manager is advertising service of type \nToolManagerControlSource.srv. It allows to select if\ncontrol messages are republished from navigation or\nmobile application (manual).
+
+state_machine->tool_manager:call service\nagribot/tool_management_control/source=mode
+tool_manager-->state_machine: return service\nagribot/tool_management_control/source=success
+loop while mode != None || config message not present for 1s 
+alt mode == MANUAL
+hal_mobile_app->tool_manager:publish configs on /agribot/control/tool/front/manual\nand /agribot/control/tool/back/manual
+else mode == NAVIGATION
+agribot_navigation->tool_manager:publish configs on /agribot/control/tool/front/navigation\nand /agribot/control/tool/back/navigation
+end
+
+tool_manager->hal_agribot_control: republish configs on /agribot/control/tool/front\nand /agribot/control/tool/back
+loop while goal config not reached
+hal_agribot_control->TPLs: send control for three point linkage
+end
+
+end
+@enduml
