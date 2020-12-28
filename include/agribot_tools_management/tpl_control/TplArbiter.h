@@ -13,7 +13,7 @@
 
 namespace tool_manager
 {
-constexpr float sec_to_ms = 0.01;
+constexpr float sec_to_ms = 0.001;
 class TplArbiter
 {
  private:
