@@ -1,7 +1,7 @@
 @startuml
 title tool manager scan
 
-participant state_machine
+actor trigger
 participant tool_manager
 participant hal_rfid
 
@@ -9,7 +9,7 @@ note over tool_manager:tool_manager is advertising service of type \nToolManager
 
 note over hal_rfid:There are two services types in hal_rfid: Tags.srv and RfidPower.srv.\nFirst one triggers scan from the antenna and returns\ndetected tags. The second one is able to change power of \nselected antenna.
 
-state_machine->tool_manager:call service\nagribot/tool_management/scan = FRONT|BACK
+trigger->tool_manager:call service\nagribot/tool_management/scan = FRONT|BACK
 loop untill one tag detected or maximum attempts number met
                     tool_manager->hal_rfid:call service\nagribot/rfid/tags = FRONT|BACK
 hal_rfid-->tool_manager: return tags[]
@@ -21,5 +21,5 @@ hal_rfid-->tool_manager: return tags[]
 						hal_rfid-->tool_manager: return success
 					end
                     end
-tool_manager-->state_machine: return tags[]
+tool_manager-->trigger: return tags[]
 @enduml
