@@ -88,7 +88,7 @@ bool ToolManagerNode::checkErrCode(ReturnCode err,
   return true;
 }
 
-ReturnCode ToolManagerNode::getTagsSrvCall(std::vector<uint16_t>& detected_tags)
+ReturnCode ToolManagerNode::getTagsSrvCall(std::vector<agribot_msgs::Tag>& detected_tags)
 {
   agribot_msgs::Tags tags_msg;
   tags_msg.request.selected_antenna = static_cast<uint8_t>(scan_handler_.getAnt());
@@ -97,10 +97,11 @@ ReturnCode ToolManagerNode::getTagsSrvCall(std::vector<uint16_t>& detected_tags)
   {
     return ReturnCode::TagsServiceError;
   }
-  for (auto id : tags_msg.response.ids)
-  {
-    detected_tags.push_back(id);
-  }
+  detected_tags = std::vector<agribot_msgs::Tag>(tags_msg.response.ids.begin(), tags_msg.response.ids.end());
+  /*  for (auto id : tags_msg.response.ids)
+    {
+      detected_tags.push_back(id);
+    } */
   return ReturnCode::Success;
 }
 
