@@ -98,10 +98,6 @@ ReturnCode ToolManagerNode::getTagsSrvCall(std::vector<agribot_msgs::Tag>& detec
     return ReturnCode::TagsServiceError;
   }
   detected_tags = std::vector<agribot_msgs::Tag>(tags_msg.response.ids.begin(), tags_msg.response.ids.end());
-  /*  for (auto id : tags_msg.response.ids)
-    {
-      detected_tags.push_back(id);
-    } */
   return ReturnCode::Success;
 }
 
