@@ -10,6 +10,7 @@
 #include <ros/advertise_options.h>
 #include <ros/callback_queue.h>
 
+#include <agribot_msgs/Tag.h>
 #include <agribot_msgs/Tags.h>
 #include <agribot_msgs/ToolManagerScan.h>
 #include <agribot_msgs/ToolManagerControlSource.h>
@@ -57,7 +58,7 @@ class ToolManagerNode
   void QueueThread();
 
   std::string retCodeToString(ReturnCode ret);
-  ReturnCode getTagsSrvCall(std::vector<uint16_t>& detected_tags);  // NOLINT(runtime/references)
+  ReturnCode getTagsSrvCall(std::vector<agribot_msgs::Tag>& detected_tags);  // NOLINT(runtime/references)
   ReturnCode setPwrSrvCall(double pwr);
   bool performScanAndPwrAdjustments(const agribot_msgs::ToolManagerScan::Request& req,  // NOLINT(runtime/references)
                                     agribot_msgs::ToolManagerScan::Response& res);      // NOLINT(runtime/references)
