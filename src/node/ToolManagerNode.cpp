@@ -186,7 +186,7 @@ bool ToolManagerNode::controlArbiterService(
 TplConfig ToolManagerNode::toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg) const
 {
   return { tool_msg->tpl_angle,        tool_msg->tpl_height,      tool_msg->red_valve_flow,
-           tool_msg->green_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
+           tool_msg->yellow_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
 }
 
 void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::AgribotTool& tool_msg) const
@@ -194,7 +194,7 @@ void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::
   tool_msg.tpl_angle = config.tpl_angle;
   tool_msg.tpl_height = config.tpl_height;
   tool_msg.red_valve_flow = config.red_valve_flow;
-  tool_msg.green_valve_flow = config.green_valve_flow;
+  tool_msg.yellow_valve_flow = config.yellow_valve_flow;
   tool_msg.blue_valve_flow = config.blue_valve_flow;
   tool_msg.pto_rpm = config.pto_rpm;
 }
