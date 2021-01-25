@@ -4,12 +4,14 @@
 
 #pragma once
 
+#include <agribot_common/TplConfig.h>
+
 #include <unordered_map>
 #include <tuple>
 
 #include "agribot_tools_management/common/ControlSource.h"
 #include "agribot_tools_management/common/ConfigIndex.h"
-#include <agribot_common/TplConfig.h>
+
 
 namespace tool_manager
 {
