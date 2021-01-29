@@ -12,6 +12,7 @@ add_compile_options(-std=c++17)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   agribot_msgs
+  agribot_common
 )
 
 ################################################
