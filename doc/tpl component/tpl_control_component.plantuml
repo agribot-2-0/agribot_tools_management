@@ -1,0 +1,72 @@
+@startuml
+
+() "/agribot/encoder/tool/front\AgribotTool.msg" as front_tpl_status
+() "/agribot/encoder/tool/back\AgribotTool.msg" as back_tpl_status
+() "/agribot/control/tool/front/manual\AgribotTool.msg" as manual_control_front_tool
+() "/agribot/control/tool/back/manual\AgribotTool.msg" as manual_control_back_tool
+() "/agribot/control/tool/front/navigation\AgribotTool.msg" as navi_control_front_tool
+() "/agribot/control/tool/back/navigation\AgribotTool.msg" as navi_control_back_tool
+() "\n/agribot/control/tool/front\AgribotTool.msg" as control_back_tool
+() "/agribot/control/tool/back\AgribotTool.msg" as control_front_tool
+() "\n/agribot/tool_management/control_source\ToolManagerControlSource.srv" as control_source
+() "agribot/inclinometer\sensor_msgs::Imu.msg" as hal_inclinometer_topic
+() "tpl status\can0_frame" as tpl_status_can0
+() "tpl config\can0_frame" as tpl_config_can0
+() "encoder feedback\can1_frame" as tpl_feedback_can1
+() "pto/rgb_valves feedback\can1_frame" as tpl_feedback_can1
+() "tpl valves control\can1_frame" as tpl_control_can1
+
+component MobileApp
+component hal_mobile_app
+component agribot_tool_management
+component agribot_navigation
+component agribot_commander {
+  [State Machine] as statemachine
+}
+component Encoder
+component hal_agribot_control {
+  () "/agribot/control/tool/front/valves" as control_valves_front
+  () "/agribot/control/tool/back/valves" as control_valves_back
+  [hal_tpl_status] as tpl_status
+  [hal_tpl_controller] as tpl_controller
+  [TTC communication] as ttc_communication
+  tpl_controller --() control_valves_front
+  tpl_controller --() control_valves_back
+  ttc_communication --( control_valves_front
+  ttc_communication --( control_valves_back
+}
+component TTControl
+component hal_inclinometer
+
+MobileApp -up-( tpl_status_can0
+MobileApp -up-() tpl_config_can0
+hal_mobile_app -down-( tpl_config_can0
+hal_mobile_app -down-() tpl_status_can0
+hal_mobile_app -up-() manual_control_front_tool
+hal_mobile_app -up-() manual_control_back_tool
+agribot_tool_management -down-( manual_control_front_tool
+agribot_tool_management -down-( manual_control_back_tool
+agribot_navigation -up-() navi_control_front_tool
+agribot_navigation -up-() navi_control_back_tool
+agribot_tool_management -down-( navi_control_front_tool
+agribot_tool_management -down-( navi_control_back_tool
+agribot_tool_management -left-() control_source
+control_source )-- statemachine
+agribot_tool_management -up-() control_back_tool
+agribot_tool_management -up-() control_front_tool
+control_front_tool )-left- tpl_controller
+control_back_tool )-left- tpl_controller
+tpl_status -down-() front_tpl_status
+tpl_status -down-() back_tpl_status
+hal_mobile_app -up-( front_tpl_status
+hal_mobile_app -up-( back_tpl_status
+tpl_controller --( front_tpl_status
+tpl_controller --( back_tpl_status
+Encoder -down-() tpl_feedback_can1
+tpl_status -up-( tpl_feedback_can1
+tpl_controller -up-() tpl_control_can1
+TTControl -down-( tpl_control_can1
+hal_inclinometer --() hal_inclinometer_topic
+hal_inclinometer_topic --( tpl_status
+
+@enduml
