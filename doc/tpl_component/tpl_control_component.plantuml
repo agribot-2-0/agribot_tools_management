@@ -67,6 +67,6 @@ tpl_status -up-( tpl_feedback_can1
 tpl_controller -up-() tpl_control_can1
 TTControl -down-( tpl_control_can1
 hal_inclinometer --() hal_inclinometer_topic
-hal_inclinometer_topic --( tpl_status
+hal_inclinometer_topic )-- tpl_status
 
 @enduml
