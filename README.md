@@ -1,7 +1,7 @@
-TLP control sequence diagram:
+TPL control sequence diagram:
 +![tool_management](doc/tpl_sequence/tpl_control.png)
 
-TLP control architecture component diagram:
+TPL control architecture component diagram:
 +![tool_management](doc/tpl_component/tpl_control_component.png)
 
 Scan for tags:
