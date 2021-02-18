@@ -1,0 +1,68 @@
+@startuml
+
+() "/agribot/control/tool/(front/back)/manual \n AgribotTool.msg" as manual_control_tool_msg
+() "\n/agribot/control/tool/(front/back)/navigation \n AgribotTool.msg" as navi_control_tool_msg
+() "/agribot/control/tool/(front/back) \n AgribotTool.msg" as control_tool_msg
+() "/agribot/tool_management/control_source \n agribot_msgs/ToolManagerControlSource.srv" as control_source_srv
+() "tpl status \n can0_frame" as tpl_status_can0
+() "tpl config \n can0_frame" as tpl_config_can0
+() "encoder feedback \n can1_frame" as tpl_feedback_can1
+() "pto/rgb_valves feedback \n can1_frame" as tpl_valves_feedback_can1
+() "tpl valves control \n can1_frame" as tpl_control_can1
+
+component agribot_commander {
+  [statemachine]
+}
+
+() "\n     /agribot/inclinometer\n     sensor_msgs::Imu.msg" as hal_inclinometer_msg
+
+component hal_tool {
+  () "\n/agribot/control/tool/(front/back)/valves" as control_valves_msg
+  () "\n           /agribot/encoder/tool/(front/back) \n            AgribotTool.msg" as tool_tpl_status_msg
+
+  [hal_tpl_status]
+  [hal_tpl_controller]
+
+  [hal_tpl_controller] -( tool_tpl_status_msg
+  tool_tpl_status_msg - [hal_tpl_status]
+
+  control_valves_msg - [hal_tpl_controller]
+}
+
+[hal_agribot_control] -( control_valves_msg
+
+[hal_tpl_status] -( hal_inclinometer_msg
+hal_inclinometer_msg - [hal_inclinometer]
+
+[statemachine] -- control_source_srv
+
+control_source_srv )-- [agribot_tool_management]
+
+[agribot_navigation] - navi_control_tool_msg
+navi_control_tool_msg )- [agribot_tool_management]
+
+[agribot_tool_management] --( manual_control_tool_msg
+[agribot_tool_management] -- control_tool_msg
+
+control_tool_msg )-- [hal_tpl_controller]
+
+manual_control_tool_msg -- [hal_mobile_app]
+
+tpl_config_can0 -- [MobileApp]
+
+[hal_mobile_app] -- tpl_status_can0
+tpl_status_can0 )-- [MobileApp]
+
+[hal_mobile_app] --( tpl_config_can0
+[hal_mobile_app] -( tool_tpl_status_msg
+
+[hal_tpl_status] --( tpl_feedback_can1
+tpl_feedback_can1 -- [Encoder]
+
+[hal_tpl_status] --( tpl_valves_feedback_can1
+tpl_valves_feedback_can1 -- [TTControl]
+
+[hal_agribot_control] -- tpl_control_can1
+tpl_control_can1 )-- [TTControl]
+
+@enduml
