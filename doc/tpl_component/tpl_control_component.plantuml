@@ -29,6 +29,12 @@ component hal_tool {
   control_valves_msg - [hal_tpl_controller]
 }
 
+component agribot_tool_management {
+  [tpl_control_arbiter]
+  [tpl_ros_controller]
+
+}
+
 [hal_agribot_control] -( control_valves_msg
 
 [hal_tpl_status] -( hal_inclinometer_msg
@@ -36,13 +42,13 @@ hal_inclinometer_msg - [hal_inclinometer]
 
 [statemachine] -- control_source_srv
 
-control_source_srv )-- [agribot_tool_management]
+control_source_srv )-- [tpl_control_arbiter]
 
-[agribot_navigation] - navi_control_tool_msg
-navi_control_tool_msg )- [agribot_tool_management]
+navi_control_tool_msg - [agribot_navigation]
+navi_control_tool_msg )- [tpl_control_arbiter]
 
-[agribot_tool_management] --( manual_control_tool_msg
-[agribot_tool_management] -- control_tool_msg
+[tpl_control_arbiter] --( manual_control_tool_msg
+[tpl_control_arbiter] -- control_tool_msg
 
 control_tool_msg )-- [hal_tpl_controller]
 
