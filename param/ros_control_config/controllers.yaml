@@ -1,0 +1,19 @@
+agribot:
+  controller:
+    position:
+      tpl_rotary_front:
+        type: effort_controllers/JointPositionController
+        joint: tpl_rotary_front
+        pid: {p: 10.0, i: 0.9, d: 0.5}
+      tpl_rotary_back:
+        type: effort_controllers/JointPositionController
+        joint: tpl_rotary_back
+        pid: {p: 9.0, i: 0.8, d: 0.4}
+      tpl_prismatic_front:
+        type: effort_controllers/JointPositionController
+        joint: tpl_prismatic_front
+        pid: {p: 8.0, i: 0.7, d: 0.3}
+      tpl_prismatic_back:
+        type: effort_controllers/JointPositionController
+        joint: tpl_prismatic_back
+        pid: {p: 7.0, i: 0.6, d: 0.2}

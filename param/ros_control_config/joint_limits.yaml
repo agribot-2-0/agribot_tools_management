@@ -1,0 +1,37 @@
+joint_limits:
+  - tpl_rotary_front:
+      has_position_limits: true
+      min_position: -0.25 # rad
+      max_position: 0.52 # rad
+      has_velocity_limits: false
+      has_acceleration_limits: false
+      has_effort_limits: true
+      max_effort: 100.0
+      min_effort: 0.0
+  - tpl_rotary_back:
+      has_position_limits: true
+      min_position: -0.25 # rad
+      max_position: 0.52 # rad
+      has_velocity_limits: false
+      has_acceleration_limits: false
+      has_effort_limits: true
+      max_effort: 100.0
+      min_effort: 0.0
+  - tpl_prismatic_front:
+      has_position_limits: true
+      min_position: 0.0 # m
+      max_position: 0.45 # m
+      has_velocity_limits: false
+      has_acceleration_limits: false
+      has_effort_limits: true
+      max_effort: 100.0
+      min_effort: 0.0
+  - tpl_prismatic_back:
+      has_position_limits: true
+      min_position: 0.0 # m
+      max_position: 0.45 # m
+      has_velocity_limits: false
+      has_acceleration_limits: false
+      has_effort_limits: true
+      max_effort: 100.0
+      min_effort: 0.0

@@ -1,0 +1,8 @@
+agribot:
+  hardware_interface:
+    loop_hz: 10 
+    joints: 
+      - tpl_rotary_front
+      - tpl_rotary_back
+      - tpl_prismatic_front
+      - tpl_prismatic_back

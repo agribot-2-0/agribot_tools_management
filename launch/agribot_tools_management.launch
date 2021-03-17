@@ -1,4 +1,18 @@
 <launch>
+
+  <rosparam file="$(find agribot_tools_management)/param/ros_control_config/hardware.yaml" command="load"/>
+  <rosparam file="$(find agribot_tools_management)/param/ros_control_config/controllers.yaml" command="load"/>
+  <rosparam file="$(find agribot_tools_management)/param/ros_control_config/joint_limits.yaml" command="load"/>
+
   <rosparam file="$(find agribot_tools_management)/param/tool_manager_params.yaml" command="load"/>
   <node pkg="agribot_tools_management" type="agribot_tools_management_node" name="agribot_tools_management_node"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/"
+    args="
+      /agribot/controller/position/tpl_rotary_front
+      /agribot/controller/position/tpl_rotary_back
+      /agribot/controller/position/tpl_prismatic_front
+      /agribot/controller/position/tpl_prismatic_back
+    "/>
+
 </launch>

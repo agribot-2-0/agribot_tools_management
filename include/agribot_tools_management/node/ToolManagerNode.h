@@ -24,8 +24,8 @@
 #include <boost/thread.hpp>
 
 #include "agribot_tools_management/scanner/Scanner.h"
-#include "agribot_tools_management/tpl_control/TplController.h"
-#include "agribot_tools_management/tpl_control/TplArbiter.h"
+#include "agribot_tools_management/tpl_control/control_arbiter/TplControlBroadcaster.h"
+#include "agribot_tools_management/tpl_control/control_arbiter/TplArbiter.h"
 #include "agribot_tools_management/common/ReturnCode.h"
 #include "agribot_tools_management/common/ControlSource.h"
 
@@ -50,7 +50,7 @@ class ToolManagerNode
 
   Scanner scan_handler_;
   TplArbiter tpl_control_arbiter_;
-  TplController tpl_control_handler_;
+  TplControlBroadcaster tpl_control_broadcast_handler_;
 
   // Custom Callback Queue
   ros::CallbackQueue queue_;

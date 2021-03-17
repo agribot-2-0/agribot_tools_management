@@ -202,7 +202,7 @@ void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::
 void ToolManagerNode::republishControlMsg() const
 {
   agribot_msgs::AgribotTool msg;
-  auto [cfg_front, cfg_back] = tpl_control_handler_.getConfigsFrontBack(tpl_control_arbiter_.getTplControlSource());
+  auto [cfg_front, cfg_back] = tpl_control_broadcast_handler_.getConfigsFrontBack(tpl_control_arbiter_.getTplControlSource());
   tplConfigToToolMsg(cfg_front, msg);
   tpl_control_destination_front_pub_.publish(msg);
   tplConfigToToolMsg(cfg_back, msg);
@@ -211,25 +211,25 @@ void ToolManagerNode::republishControlMsg() const
 
 void ToolManagerNode::cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_handler_.setConfig(ConfigIndex::FrontManual, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::FrontManual, toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::FrontManual);
 }
 
 void ToolManagerNode::cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_handler_.setConfig(ConfigIndex::BackManual, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::BackManual, toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::BackManual);
 }
 
 void ToolManagerNode::cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_handler_.setConfig(ConfigIndex::FrontNavigation, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::FrontNavigation, toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::FrontNavigation);
 }
 
 void ToolManagerNode::cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_handler_.setConfig(ConfigIndex::BackNavigation, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::BackNavigation, toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::BackNavigation);
 }
 
