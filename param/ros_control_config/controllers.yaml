@@ -1,5 +1,8 @@
 agribot:
   controller:
+    state:
+      type: joint_state_controller/JointStateController
+      publish_rate : 50
     position:
       tpl_rotary_front:
         type: effort_controllers/JointPositionController
