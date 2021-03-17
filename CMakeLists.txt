@@ -11,6 +11,11 @@ add_compile_options(-std=c++17)
 #############################################################################
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  hardware_interface
+  controller_manager
+  joint_limits_interface
+  control_toolbox
+  control_msgs
   agribot_msgs
   agribot_common
 )
