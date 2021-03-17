@@ -10,6 +10,5 @@ namespace tool_manager
 {
 class TplExtensionController : ITplController
 {
-
 };
-}
+}  // namespace tool_manager

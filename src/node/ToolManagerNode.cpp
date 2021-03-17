@@ -202,7 +202,8 @@ void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::
 void ToolManagerNode::republishControlMsg() const
 {
   agribot_msgs::AgribotTool msg;
-  auto [cfg_front, cfg_back] = tpl_control_broadcast_handler_.getConfigsFrontBack(tpl_control_arbiter_.getTplControlSource());
+  auto [cfg_front, cfg_back] =
+      tpl_control_broadcast_handler_.getConfigsFrontBack(tpl_control_arbiter_.getTplControlSource());
   tplConfigToToolMsg(cfg_front, msg);
   tpl_control_destination_front_pub_.publish(msg);
   tplConfigToToolMsg(cfg_back, msg);

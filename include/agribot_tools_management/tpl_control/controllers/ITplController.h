@@ -10,7 +10,5 @@ class ITplController
 {
   virtual void setSetPoint(double set_point) = 0;
   virtual void getControl() = 0;
-
-
 };
-}
+}  // namespace tool_manager
