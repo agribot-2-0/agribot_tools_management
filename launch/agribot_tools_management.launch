@@ -10,10 +10,10 @@
 
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/"
     args="
-      /agribot/controller/position/front_lower_hitches_revolute_control
-      /agribot/controller/position/back_lower_hitches_revolute_control
-      /agribot/controller/position/front_upper_hitch_prismatic_control
-      /agribot/controller/position/back_upper_hitch_prismatic_control
+      /agribot/controller/position/front_tpl_lower_hitches_revolute_control
+      /agribot/controller/position/back_tpl_lower_hitches_revolute_control
+      /agribot/controller/position/front_tpl_upper_hitch_prismatic_control
+      /agribot/controller/position/back_tpl_upper_hitch_prismatic_control
     "/>
 
 </launch>
