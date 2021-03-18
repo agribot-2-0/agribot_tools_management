@@ -6,7 +6,7 @@
 
   <rosparam file="$(find agribot_tools_management)/param/tool_manager_params.yaml" command="load"/>
   <node pkg="agribot_tools_management" type="agribot_tools_management_node" name="agribot_tools_management_node"/>
-  <node pkg="agribot_tools_management" type="tool_control_node" name="tool_control_node"/>
+  <node pkg="agribot_tools_management" type="tool_control_node" name="tool_control_node" output="screen"/>
 
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/"
     args="

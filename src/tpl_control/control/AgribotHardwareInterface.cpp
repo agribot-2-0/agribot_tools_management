@@ -19,7 +19,7 @@ AgribotHardwareInterface::AgribotHardwareInterface(ros::NodeHandle& nh) : nh_(nh
   init();
   controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
 
-  nh_.param("/tr1/hardware_interface/loop_hz", loop_hz_, 0.1);
+  nh_.param("/agribot/hardware_interface/loop_hz", loop_hz_, 0.1);
   ROS_DEBUG_STREAM_NAMED("constructor", "Using loop freqency of " << loop_hz_ << " hz");
   ros::Duration update_freq = ros::Duration(1.0 / loop_hz_);
   non_realtime_loop_ = nh_.createTimer(update_freq, &AgribotHardwareInterface::update, this);
@@ -90,7 +90,7 @@ void AgribotHardwareInterface::init()
 
   registerInterface(&joint_state_interface_);
   registerInterface(&position_joint_interface_);
-  registerInterface(&velocity_joint_interface_);
+  //registerInterface(&velocity_joint_interface_);
   registerInterface(&effort_joint_interface_);
   registerInterface(&positionJointSoftLimitsInterface);
 }
@@ -133,7 +133,7 @@ void AgribotHardwareInterface::read()
     //   _logInfo += "  " + joint.name + ": " + jointPositionStr.str() + "\n";
     // }
 
-    joint_position_[i] = 0;
+    joint_position_[i] = i;
 
     //tr1.setJoint(joint);
   }

@@ -1,37 +1,41 @@
 joint_limits:
-  - front_tpl_lower_hitches_revolute_joint:
-      has_position_limits: true
-      min_position: -0.25 # rad
-      max_position: 0.52 # rad
-      has_velocity_limits: false
-      has_acceleration_limits: false
-      has_effort_limits: true
-      max_effort: 100.0
-      min_effort: -100.0
-  - back_tpl_lower_hitches_revolute_joint:
-      has_position_limits: true
-      min_position: -0.25 # rad
-      max_position: 0.52 # rad
-      has_velocity_limits: false
-      has_acceleration_limits: false
-      has_effort_limits: true
-      max_effort: 100.0
-      min_effort: -100.0
-  - front_tpl_upper_hitch_prismatic_joint:
-      has_position_limits: true
-      min_position: 0.0 # m
-      max_position: 0.45 # m
-      has_velocity_limits: false
-      has_acceleration_limits: false
-      has_effort_limits: true
-      max_effort: 100.0
-      min_effort: -100.0
-  - back_tpl_upper_hitch_prismatic_joint:
-      has_position_limits: true
-      min_position: 0.0 # m
-      max_position: 0.45 # m
-      has_velocity_limits: false
-      has_acceleration_limits: false
-      has_effort_limits: true
-      max_effort: 100.0
-      min_effort: -100.0
+  front_tpl_lower_hitches_revolute_joint:
+    has_position_limits: true
+    min_position: -0.25 # rad
+    max_position: 0.52 # rad
+    has_velocity_limits: true
+    max_velocity: 0.5
+    has_acceleration_limits: false
+    has_effort_limits: true
+    max_effort: 100.0
+    min_effort: -100.0
+  back_tpl_lower_hitches_revolute_joint:
+    has_position_limits: true
+    min_position: -0.25 # rad
+    max_position: 0.52 # rad
+    has_velocity_limits: true
+    max_velocity: 0.5
+    has_acceleration_limits: false
+    has_effort_limits: true
+    max_effort: 100.0
+    min_effort: -100.0
+  front_tpl_upper_hitch_prismatic_joint:
+    has_position_limits: true
+    min_position: 0.0 # m
+    max_position: 0.45 # m
+    has_velocity_limits: true
+    max_velocity: 0.5
+    has_acceleration_limits: false
+    has_effort_limits: true
+    max_effort: 100.0
+    min_effort: -100.0
+  back_tpl_upper_hitch_prismatic_joint:
+    has_position_limits: true
+    min_position: 0.0 # m
+    max_position: 0.45 # m
+    has_velocity_limits: true
+    max_velocity: 0.5
+    has_acceleration_limits: false
+    has_effort_limits: true
+    max_effort: 100.0
+    min_effort: -100.0
