@@ -4,19 +4,19 @@ agribot:
       type: joint_state_controller/JointStateController
       publish_rate : 50
     position:
-      tpl_rotary_front:
+      front_lower_hitches_revolute_control:
         type: effort_controllers/JointPositionController
-        joint: tpl_rotary_front
+        joint: front_lower_hitches_revolute_joint
         pid: {p: 10.0, i: 0.9, d: 0.5}
-      tpl_rotary_back:
+      back_lower_hitches_revolute_control:
         type: effort_controllers/JointPositionController
-        joint: tpl_rotary_back
+        joint: back_lower_hitches_revolute_joint
         pid: {p: 9.0, i: 0.8, d: 0.4}
-      tpl_prismatic_front:
+      front_upper_hitch_prismatic_control:
         type: effort_controllers/JointPositionController
-        joint: tpl_prismatic_front
+        joint: front_upper_hitch_prismatic_joint
         pid: {p: 8.0, i: 0.7, d: 0.3}
-      tpl_prismatic_back:
+      back_upper_hitch_prismatic_control:
         type: effort_controllers/JointPositionController
-        joint: tpl_prismatic_back
+        joint: back_upper_hitch_prismatic_joint
         pid: {p: 7.0, i: 0.6, d: 0.2}

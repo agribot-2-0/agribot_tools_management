@@ -52,25 +52,25 @@ void AgribotHardwareInterface::init()
   // Initialize controller
   for (int i = 0; i < num_joints_; ++i)
   {
-    tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
+    //tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
 
-    ROS_DEBUG_STREAM_NAMED("constructor", "Loading joint name: " << joint.name);
+    ROS_DEBUG_STREAM_NAMED("constructor", "Loading joint name: " << joint_names_[i]);
 
-    nh_.getParam("/tr1/joint_offsets/" + joint.name, joint.angleOffset);
-    nh_.getParam("/tr1/joint_read_ratio/" + joint.name, joint.readRatio);
-    tr1.setJoint(joint);
+    //nh_.getParam("/tr1/joint_offsets/" + joint.name, joint.angleOffset);
+    //nh_.getParam("/tr1/joint_read_ratio/" + joint.name, joint.readRatio);
+    //tr1.setJoint(joint);
 
     // Create joint state interface
-    JointStateHandle jointStateHandle(joint.name, &joint_position_[i], &joint_velocity_[i], &joint_effort_[i]);
+    JointStateHandle jointStateHandle(joint_names_[i], &joint_position_[i], &joint_velocity_[i], &joint_effort_[i]);
     joint_state_interface_.registerHandle(jointStateHandle);
 
     // Create position joint interface
     JointHandle jointPositionHandle(jointStateHandle, &joint_position_command_[i]);
     JointLimits limits;
     SoftJointLimits softLimits;
-    if (getJointLimits(joint.name, nh_, limits) == false)
+    if (getJointLimits(joint_names_[i], nh_, limits) == false)
     {
-      ROS_ERROR_STREAM("Cannot set joint limits for " << joint.name);
+      ROS_ERROR_STREAM("Cannot set joint limits for " << joint_names_[i]);
     }
     else
     {
@@ -90,7 +90,7 @@ void AgribotHardwareInterface::init()
 
   registerInterface(&joint_state_interface_);
   registerInterface(&position_joint_interface_);
-  // registerInterface(&velocity_joint_interface_);
+  registerInterface(&velocity_joint_interface_);
   registerInterface(&effort_joint_interface_);
   registerInterface(&positionJointSoftLimitsInterface);
 }
@@ -112,26 +112,30 @@ void AgribotHardwareInterface::update(const ros::TimerEvent& e)
   controller_manager_->update(ros::Time::now(), elapsed_time_);
   write(elapsed_time_);
 
-  // ROS_INFO_STREAM(_logInfo);
+  ROS_INFO_STREAM(_logInfo);
 }
 
+// TODO: get current data from topic, which contains TPL encoder data
+// and nextly
 void AgribotHardwareInterface::read()
 {
   _logInfo += "Joint State:\n";
   for (int i = 0; i < num_joints_; i++)
   {
-    tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
+    // tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
 
-    if (joint.getActuatorType() == ACTUATOR_TYPE_MOTOR)
-    {
-      joint_position_[i] = joint.readAngle();
+    // if (joint.getActuatorType() == ACTUATOR_TYPE_MOTOR)
+    // {
+    //   joint_position_[i] = joint.readAngle();
 
-      std::ostringstream jointPositionStr;
-      jointPositionStr << joint_position_[i];
-      _logInfo += "  " + joint.name + ": " + jointPositionStr.str() + "\n";
-    }
+    //   std::ostringstream jointPositionStr;
+    //   jointPositionStr << joint_position_[i];
+    //   _logInfo += "  " + joint.name + ": " + jointPositionStr.str() + "\n";
+    // }
 
-    tr1.setJoint(joint);
+    joint_position_[i] = 0;
+
+    //tr1.setJoint(joint);
   }
 }
 
@@ -142,24 +146,24 @@ void AgribotHardwareInterface::write(ros::Duration elapsed_time)
   _logInfo += "Joint Effort Command:\n";
   for (int i = 0; i < num_joints_; i++)
   {
-    tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
+    //tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
     // if (joint_effort_command_[i] > 1) joint_effort_command_[i] = 1;
     // if (joint_effort_command_[i] < -1) joint_effort_command_[i] = -1;
 
     double effort = joint_effort_command_[i];
     uint8_t duration = 15;
 
-    if (joint.getActuatorType() == 1)
-    {  // servo
-      double previousEffort = joint.getPreviousEffort();
-      effort += previousEffort;
-    }
+    // if (joint.getActuatorType() == 1)
+    // {  // servo
+    //   double previousEffort = joint.getPreviousEffort();
+    //   effort += previousEffort;
+    // }
 
-    joint.actuate(effort, duration);
+    //joint.actuate(effort, duration);
 
     std::ostringstream jointEffortStr;
     jointEffortStr << joint_effort_command_[i];
-    _logInfo += "  " + joint.name + ": " + jointEffortStr.str() + "\n";
+    _logInfo += "  " + joint_names_[i] + ": " + jointEffortStr.str() + "\n";
   }
 }
 }  // namespace 

@@ -51,12 +51,23 @@ add_executable(agribot_tools_management_node src/node/ToolManagerNode.cpp src/sc
 target_link_libraries(agribot_tools_management_node ${catkin_LIBRARIES})
 add_dependencies(agribot_tools_management_node ${catkin_EXPORTED_TARGETS})
 
+link_directories("${PROJECT_SOURCE_DIR}")
+add_executable(tool_control_node src/node/tool_control_node.cpp src/tpl_control/control/AgribotHardwareInterface.cpp)
+target_link_libraries(tool_control_node ${catkin_LIBRARIES})
+add_dependencies(tool_control_node ${catkin_EXPORTED_TARGETS})
+
 #############
 ## Install ##
 #############
 
 install(TARGETS
   agribot_tools_management_node
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+install(TARGETS
+  tool_control_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
