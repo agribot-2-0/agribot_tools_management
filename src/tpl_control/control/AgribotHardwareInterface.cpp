@@ -122,18 +122,11 @@ void AgribotHardwareInterface::read()
   _logInfo += "Joint State:\n";
   for (int i = 0; i < num_joints_; i++)
   {
-    // tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
+      joint_position_[i] = i;
 
-    // if (joint.getActuatorType() == ACTUATOR_TYPE_MOTOR)
-    // {
-    //   joint_position_[i] = joint.readAngle();
-
-    //   std::ostringstream jointPositionStr;
-    //   jointPositionStr << joint_position_[i];
-    //   _logInfo += "  " + joint.name + ": " + jointPositionStr.str() + "\n";
-    // }
-
-    joint_position_[i] = i;
+      std::ostringstream jointPositionStr;
+      jointPositionStr << joint_position_[i];
+      _logInfo += "  " + joint_names_[i] + ": " + jointPositionStr.str() + "\n";
 
     //tr1.setJoint(joint);
   }

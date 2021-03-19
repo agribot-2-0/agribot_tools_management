@@ -26,12 +26,12 @@ class AgribotHardware : public hardware_interface::RobotHW
   hardware_interface::VelocityJointInterface velocity_joint_interface_;
   hardware_interface::EffortJointInterface effort_joint_interface_;
 
-  joint_limits_interface::EffortJointSaturationInterface effort_joint_saturation_interface_;
-  joint_limits_interface::EffortJointSoftLimitsInterface effort_joint_limits_interface_;
-  joint_limits_interface::PositionJointSaturationInterface position_joint_saturation_interface_;
-  joint_limits_interface::PositionJointSoftLimitsInterface position_joint_limits_interface_;
-  joint_limits_interface::VelocityJointSaturationInterface velocity_joint_saturation_interface_;
-  joint_limits_interface::VelocityJointSoftLimitsInterface velocity_joint_limits_interface_;
+  // joint_limits_interface::EffortJointSaturationInterface effort_joint_saturation_interface_;
+  // joint_limits_interface::EffortJointSoftLimitsInterface effort_joint_limits_interface_;
+  // joint_limits_interface::PositionJointSaturationInterface position_joint_saturation_interface_;
+  // joint_limits_interface::PositionJointSoftLimitsInterface position_joint_limits_interface_;
+  // joint_limits_interface::VelocityJointSaturationInterface velocity_joint_saturation_interface_;
+  // joint_limits_interface::VelocityJointSoftLimitsInterface velocity_joint_limits_interface_;
 
   // Shared memory
   int num_joints_;
