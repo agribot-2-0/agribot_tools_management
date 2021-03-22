@@ -116,7 +116,6 @@ void AgribotHardwareInterface::update(const ros::TimerEvent& e)
 }
 
 // TODO: get current data from topic, which contains TPL encoder data
-// and nextly
 void AgribotHardwareInterface::read()
 {
   _logInfo += "Joint State:\n";
@@ -144,8 +143,8 @@ void AgribotHardwareInterface::write(ros::Duration elapsed_time)
     // if (joint_effort_command_[i] < -1) joint_effort_command_[i] = -1;
 
     double effort = joint_effort_command_[i];
-    uint8_t duration = 15;
-
+  
+    //uint8_t duration = 15;
     // if (joint.getActuatorType() == 1)
     // {  // servo
     //   double previousEffort = joint.getPreviousEffort();
