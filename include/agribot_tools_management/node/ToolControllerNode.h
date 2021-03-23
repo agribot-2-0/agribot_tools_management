@@ -7,16 +7,20 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
+#include <memory>
+#include <vector>
+#include <string_view>
+
 #include <agribot_common/TplConfig.h>
+#include <agribot_common/CommonFunctions/ros_common_functions.h>
 #include <controller_manager/controller_manager.h>
 #include <agribot_tools_management/tpl_control/control/AgribotHardwareInterface.h>
-
-#include <memory>
 
 namespace tool_manager
 {
 class ToolControllerNode
 {
+ private:
   std::shared_ptr<ros::NodeHandle> node_handle_;
   // ros_control:
   std::unique_ptr<AgribotHardwareInterface> agribot_hardware_interface_;
@@ -36,7 +40,7 @@ class ToolControllerNode
   TplConfig front_tpl_control_;
   TplConfig back_tpl_control_;
 
-private:
+ public:
   ToolControllerNode(int argc, char** argv);
   void run();
 };

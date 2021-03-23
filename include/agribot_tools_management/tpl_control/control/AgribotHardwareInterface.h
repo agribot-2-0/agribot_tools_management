@@ -4,69 +4,50 @@
 
 #pragma once
 
-#include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/joint_command_interface.h>
+#include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
+
 #include <joint_limits_interface/joint_limits_interface.h>
 #include <joint_limits_interface/joint_limits.h>
 #include <joint_limits_interface/joint_limits_urdf.h>
 #include <joint_limits_interface/joint_limits_rosparam.h>
-#include <controller_manager/controller_manager.h>
-#include <boost/scoped_ptr.hpp>
-#include <ros/ros.h>
 
 namespace tool_manager
 {
 class AgribotHardwareInterface : public hardware_interface::RobotHW
 {
- protected:
-  // Interfaces
-  hardware_interface::JointStateInterface joint_state_interface_;
-  hardware_interface::PositionJointInterface position_joint_interface_;
-  hardware_interface::VelocityJointInterface velocity_joint_interface_;
-  hardware_interface::EffortJointInterface effort_joint_interface_;
-
-  // joint_limits_interface::EffortJointSaturationInterface effort_joint_saturation_interface_;
-  // joint_limits_interface::EffortJointSoftLimitsInterface effort_joint_limits_interface_;
-  // joint_limits_interface::PositionJointSaturationInterface position_joint_saturation_interface_;
-  // joint_limits_interface::PositionJointSoftLimitsInterface position_joint_limits_interface_;
-  // joint_limits_interface::VelocityJointSaturationInterface velocity_joint_saturation_interface_;
-  // joint_limits_interface::VelocityJointSoftLimitsInterface velocity_joint_limits_interface_;
-
-  // Shared memory
-  int num_joints_;
-  int joint_mode_;  // position, velocity, or effort
+ private:
   std::vector<std::string> joint_names_;
-  std::vector<int> joint_types_;
-  std::vector<double> joint_position_;
-  std::vector<double> joint_velocity_;
-  std::vector<double> joint_effort_;
-  std::vector<double> joint_position_command_;
-  std::vector<double> joint_velocity_command_;
-  std::vector<double> joint_effort_command_;
-  std::vector<double> joint_lower_limits_;
-  std::vector<double> joint_upper_limits_;
-  std::vector<double> joint_effort_limits_;
+  // Data member arrays to store the controller commands which are sent to the
+  // robot's resources (joints, actuators)
+  std::unordered_map<std::string, double> effort_command_;
+  std::unordered_map<std::string, double> position_command_;
+  // Data member arrays to store the state of the robot's resources (joints, sensors)
+  std::unordered_map<std::string, double> position_;
+  std::unordered_map<std::string, double> velocity_;
+  std::unordered_map<std::string, double> effort_;
 
-
-  // tr1cpp::TR1 tr1; agribot valve values publish handler
-  ros::NodeHandle nh_;
-  ros::Timer non_realtime_loop_;
-  ros::Duration control_period_;
-  ros::Duration elapsed_time_;
-  hardware_interface::PositionJointInterface positionJointInterface;
-  joint_limits_interface::PositionJointSoftLimitsInterface positionJointSoftLimitsInterface;
-  double loop_hz_;
-  boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
-  double p_error_, v_error_, e_error_;
-  std::string _logInfo;
+  // hardware_interface::JointStateInterface gives read access to all joint values
+  // without conflicting with other controllers.
+  hardware_interface::JointStateInterface joint_state_interface_;
+  // hardware_interface::PositionJointInterface inherits from
+  // hardware_interface::JointCommandInterface and is used for reading and writing
+  // joint positions. Because this interface reserves the joints for write access,
+  // conflicts with other controllers writing to the same joints might occure.
+  // To only read joint positions, avoid conflicts using
+  // hardware_interface::JointStateInterface.
+  hardware_interface::PositionJointInterface joint_position_interface_;
+  hardware_interface::EffortJointInterface joint_effort_interface_;
 
  public:
-  AgribotHardwareInterface(ros::NodeHandle& nh);
+  AgribotHardwareInterface(std::vector<std::string>&& joint_names);
   ~AgribotHardwareInterface();
-  void init();
-  void update(const ros::TimerEvent& e);
+  // get most current data from proper topics
   void read();
-  void write(ros::Duration elapsed_time);
+  // update command values
+  void update();
+  // publish control values to proper topics
+  void write();
 };
 }  // namespace tool_manager

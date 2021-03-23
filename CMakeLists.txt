@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(agribot_tools_management)
 
-add_compile_options(-std=c++17)
+add_compile_options(-std=c++17 -Wall -Wextra -pedantic)
 
 #############################################################################
 ## Find catkin packages and libraries for catkin and system dependencies   ##
@@ -47,14 +47,14 @@ include_directories(
 )
 
 link_directories("${PROJECT_SOURCE_DIR}")
-add_executable(agribot_tools_management_node src/node/ToolManagerNode.cpp src/scanner/Scanner.cpp src/tpl_control/control_arbiter/TplControlBroadcaster.cpp src/tpl_control/control_arbiter/TplArbiter.cpp src/node/tool_manager_node.cpp )
+add_executable(agribot_tools_management_node src/node/tool_manager_node.cpp src/node/ToolManagerNode.cpp src/scanner/Scanner.cpp src/tpl_control/control_arbiter/TplControlBroadcaster.cpp src/tpl_control/control_arbiter/TplArbiter.cpp)
 target_link_libraries(agribot_tools_management_node ${catkin_LIBRARIES})
 add_dependencies(agribot_tools_management_node ${catkin_EXPORTED_TARGETS})
 
 link_directories("${PROJECT_SOURCE_DIR}")
-add_executable(tool_control_node src/node/tool_control_node.cpp src/tpl_control/control/AgribotHardwareInterface.cpp)
-target_link_libraries(tool_control_node ${catkin_LIBRARIES})
-add_dependencies(tool_control_node ${catkin_EXPORTED_TARGETS})
+add_executable(agribot_tools_control_node src/node/tool_control_node.cpp src/node/ToolControllerNode.cpp src/tpl_control/control/AgribotHardwareInterface.cpp)
+target_link_libraries(agribot_tools_control_node ${catkin_LIBRARIES})
+add_dependencies(agribot_tools_control_node ${catkin_EXPORTED_TARGETS})
 
 #############
 ## Install ##
@@ -67,7 +67,7 @@ install(TARGETS
 )
 
 install(TARGETS
-  tool_control_node
+  agribot_tools_control_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
