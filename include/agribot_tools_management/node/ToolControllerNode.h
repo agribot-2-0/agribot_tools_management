@@ -15,6 +15,7 @@
 #include <agribot_common/CommonFunctions/ros_common_functions.h>
 
 #include <agribot_msgs/AgribotTool.h>
+#include <std_msgs/Float64.h>
 
 #include <controller_manager/controller_manager.h>
 #include <agribot_tools_management/tpl_control/control/AgribotHardwareInterface.h>
@@ -35,7 +36,10 @@ class ToolControllerNode
   ros::Subscriber back_tpl_setpoint_sub_;
   ros::Publisher front_tpl_control_pub_;
   ros::Publisher back_tpl_control_pub_;
-
+  ros::Publisher back_tpl_lower_hitches_revolute_command_pub_;
+  ros::Publisher back_tpl_upper_hitch_prismatic_command_pub_;
+  ros::Publisher front_tpl_lower_hitches_revolute_command_pub_;
+  ros::Publisher front_tpl_upper_hitch_prismatic_command_pub_;
   // Structures for storing feedback and setpoints
   TplConfig front_tpl_feedback_;
   TplConfig back_tpl_feedback_;
@@ -50,6 +54,7 @@ class ToolControllerNode
   void frontTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
   void backTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
   void publishControlMessages() const;
+  void publishCommands() const;
 
  public:
   ToolControllerNode(int argc, char** argv);

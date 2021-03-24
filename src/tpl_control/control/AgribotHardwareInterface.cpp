@@ -52,7 +52,7 @@ AgribotHardwareInterface::~AgribotHardwareInterface()
 // }
 
 // // TODO: get current data from topic, which contains TPL encoder data
-void AgribotHardwareInterface::read()
+void AgribotHardwareInterface::read(const TplConfig& front_feedback, const TplConfig& back_feedback)
 {
   for (const auto& name : joint_names_)
   {
@@ -71,7 +71,7 @@ void AgribotHardwareInterface::read()
 //   }
 }
 
-void AgribotHardwareInterface::write()
+void AgribotHardwareInterface::write(TplConfig& front_control, TplConfig& back_control)
 {
 //   positionJointSoftLimitsInterface.enforceLimits(elapsed_time);
 

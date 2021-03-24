@@ -20,5 +20,14 @@ inline const struct
   std::string back_control = "/agribot/control/tool/back/valves";
   std::string front_feedback = "/agribot/encoder/tool/front";
   std::string back_feedback = "/agribot/encoder/tool/back";
+  // Topics for setpoints of controllers
+  std::string back_tpl_lower_hitches_revolute_control_command = "/agribot/controller/position/"
+                                                                "back_tpl_lower_hitches_revolute_control/command";
+  std::string back_tpl_upper_hitch_prismatic_control = "/agribot/controller/position/"
+                                                                "back_tpl_upper_hitch_prismatic_control/command";
+  std::string front_tpl_lower_hitches_revolute_control = "/agribot/controller/position/"
+                                                         "front_tpl_lower_hitches_revolute_control/command";
+  std::string front_tpl_upper_hitch_prismatic_control = "/agribot/controller/position/"
+                                                        "front_tpl_upper_hitch_prismatic_control/command";
 } tpl_control_topic_name;
-}
+}  // namespace tool_manager

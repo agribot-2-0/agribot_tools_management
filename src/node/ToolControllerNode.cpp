@@ -37,6 +37,21 @@ void ToolControllerNode::publishControlMessages() const
   back_tpl_control_pub_.publish(msg);
 }
 
+void ToolControllerNode::publishCommands() const
+{
+  // [IMPORTANT] In order for controller to work proerly, the setpoint for prismatic joint needs to be set
+  // as an negative values! (this is caused by joints description in /robot_description param)
+  std_msgs::Float64 msg;
+  msg.data = front_tpl_setpoint_.tpl_angle;
+  front_tpl_lower_hitches_revolute_command_pub_.publish(msg);
+  msg.data = -front_tpl_setpoint_.tpl_height;
+  front_tpl_upper_hitch_prismatic_command_pub_.publish(msg);
+  msg.data = back_tpl_setpoint_.tpl_angle;
+  back_tpl_lower_hitches_revolute_command_pub_.publish(msg);
+  msg.data = -back_tpl_setpoint_.tpl_height;
+  back_tpl_upper_hitch_prismatic_command_pub_.publish(msg);
+}
+
 ToolControllerNode::ToolControllerNode(int argc, char** argv)
 {
   ros::init(argc, argv, "agribot_tools_control_node");
@@ -63,15 +78,24 @@ ToolControllerNode::ToolControllerNode(int argc, char** argv)
                                                     &ToolControllerNode::frontTplSetpointCallback, this);
   back_tpl_setpoint_sub_ = node_handle_->subscribe(tpl_control_topic_name.back_setpoint, 1,
                                                    &ToolControllerNode::backTplSetpointCallback, this);
+
   front_tpl_control_pub_ = node_handle_->advertise<agribot_msgs::AgribotTool>(tpl_control_topic_name.front_control, 1);
   back_tpl_control_pub_ = node_handle_->advertise<agribot_msgs::AgribotTool>(tpl_control_topic_name.back_control, 1);
+  front_tpl_lower_hitches_revolute_command_pub_ =
+      node_handle_->advertise<std_msgs::Float64>(tpl_control_topic_name.front_tpl_lower_hitches_revolute_control, 1);
+  front_tpl_upper_hitch_prismatic_command_pub_ =
+      node_handle_->advertise<std_msgs::Float64>(tpl_control_topic_name.front_tpl_upper_hitch_prismatic_control, 1);
+  back_tpl_lower_hitches_revolute_command_pub_ = node_handle_->advertise<std_msgs::Float64>(
+      tpl_control_topic_name.back_tpl_lower_hitches_revolute_control_command, 1);
+  back_tpl_upper_hitch_prismatic_command_pub_ =
+      node_handle_->advertise<std_msgs::Float64>(tpl_control_topic_name.back_tpl_upper_hitch_prismatic_control, 1);
 }
 
 void ToolControllerNode::run()
 {
   ros::AsyncSpinner spinner(1);
   spinner.start();
-  ros::Rate rate(1);  // todo(mwiadoms): read loop from rosparam
+  ros::Rate rate(10);  // todo(mwiadoms): read loop from rosparam
   ros::Time time;
   ros::Time previous_time;
   while (ros::ok())
@@ -79,12 +103,14 @@ void ToolControllerNode::run()
     // ros control
     time = ros::Time::now();
     const ros::Duration period = time - previous_time;
-    agribot_hardware_interface_->read();
+    agribot_hardware_interface_->read(front_tpl_feedback_, back_tpl_feedback_);
     control_manager_->update(ros::Time::now(), period);
-    agribot_hardware_interface_->write();
+    agribot_hardware_interface_->write(front_tpl_control_, back_tpl_control_);
     previous_time = time;
     // publish control values
-    publishControlMessages();
+    publishControlMessages();  // publish control valves values (output from ros_control)
+    publishCommands();         // publish setpoints, from inner class structers to controller command topics (input to
+                               // ros_control)
     ros::spinOnce();
     rate.sleep();
   }
