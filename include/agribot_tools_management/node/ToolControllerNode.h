@@ -45,10 +45,11 @@ class ToolControllerNode
   TplConfig front_tpl_control_;
   TplConfig back_tpl_control_;
 
-  void frontTplFeedbackCallback(const agribot_msgs::AgribotTool& msg);
-  void backTplFeedbackCallback(const agribot_msgs::AgribotTool& msg);
-  void frontTplSetpointCallback(const agribot_msgs::AgribotTool& msg);
-  void backTplSetpointCallback(const agribot_msgs::AgribotTool& msg);
+  void frontTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
+  void backTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
+  void frontTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
+  void backTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
+  void publishControlMessages() const;
 
  public:
   ToolControllerNode(int argc, char** argv);

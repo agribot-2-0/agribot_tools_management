@@ -2,7 +2,6 @@
  * Copyright (C) 2020 Agribot. All rights reserved.
  */
 
-
 #include "agribot_tools_management/tpl_control/control_arbiter/TplArbiter.h"
 #include "agribot_tools_management/common/TplControlTopicName.h"
 
@@ -18,7 +17,7 @@ TplArbiter::TplArbiter() : source_(ControlSource::None)
 
 void TplArbiter::setTimeout(int timeout, int loop_rate)
 {
-  timeout_val_ = (timeout*loop_rate)*sec_to_ms;
+  timeout_val_ = (timeout * loop_rate) * sec_to_ms;
 }
 
 void TplArbiter::setTplControlSource(ControlSource const src)
@@ -48,6 +47,8 @@ void TplArbiter::incrementTimeoutCnts()
       timeout_[ConfigIndex::FrontNavigation] += 1;
       timeout_[ConfigIndex::BackNavigation] += 1;
       break;
+    default:
+      break;
   }
 }
 
@@ -60,6 +61,7 @@ void TplArbiter::monitorResetTimeoutCnts()
 {
   for (const auto& [timeout_index, timeout_value] : timeout_)
   {
+    (void)timeout_value;  // suppress [-Wunused-variable]
     TplArbiter::monitorResetTimeoutCnt(timeout_index);
   }
 }
@@ -70,6 +72,7 @@ bool TplArbiter::timeoutsExceeded()
 
   for (const auto& [timeout_index, timeout_value] : timeout_)
   {
+    (void)timeout_index;  // suppress [-Wunused-variable]
     // if there is no controll message on selected topic for more than one second
     if (timeout_value > timeout_val_)
     {

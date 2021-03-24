@@ -4,27 +4,37 @@
 
 #include "agribot_tools_management/node/ToolControllerNode.h"
 #include "agribot_tools_management/common/TplControlTopicName.h"
+#include "agribot_tools_management/common/MsgStructTransformFunctions.h"
 
 namespace tool_manager
 {
-void ToolControllerNode::frontTplFeedbackCallback(const agribot_msgs::AgribotTool& msg)
+void ToolControllerNode::frontTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-
+  front_tpl_feedback_ = msg_struct_transform_functions::toolMsgToTplConfig(msg);
 }
 
-void ToolControllerNode::backTplFeedbackCallback(const agribot_msgs::AgribotTool& msg)
+void ToolControllerNode::backTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-
+  back_tpl_feedback_ = msg_struct_transform_functions::toolMsgToTplConfig(msg);
 }
 
-void ToolControllerNode::frontTplSetpointCallback(const agribot_msgs::AgribotTool& msg)
+void ToolControllerNode::frontTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-
+  front_tpl_setpoint_ = msg_struct_transform_functions::toolMsgToTplConfig(msg);
 }
 
-void ToolControllerNode::backTplSetpointCallback(const agribot_msgs::AgribotTool& msg)
+void ToolControllerNode::backTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-  
+  back_tpl_setpoint_ = msg_struct_transform_functions::toolMsgToTplConfig(msg);
+}
+
+void ToolControllerNode::publishControlMessages() const
+{
+  agribot_msgs::AgribotTool msg;
+  msg_struct_transform_functions::tplConfigToToolMsg(front_tpl_control_, msg);
+  front_tpl_control_pub_.publish(msg);
+  msg_struct_transform_functions::tplConfigToToolMsg(back_tpl_control_, msg);
+  back_tpl_control_pub_.publish(msg);
 }
 
 ToolControllerNode::ToolControllerNode(int argc, char** argv)
@@ -66,13 +76,15 @@ void ToolControllerNode::run()
   ros::Time previous_time;
   while (ros::ok())
   {
-    // Basic bookkeeping to get the system time in order to compute the control period.
+    // ros control
     time = ros::Time::now();
     const ros::Duration period = time - previous_time;
     agribot_hardware_interface_->read();
     control_manager_->update(ros::Time::now(), period);
     agribot_hardware_interface_->write();
     previous_time = time;
+    // publish control values
+    publishControlMessages();
     ros::spinOnce();
     rate.sleep();
   }
