@@ -2,7 +2,9 @@
  * Copyright (C) 2020 Agribot. All rights reserved.
  */
 
+
 #include "agribot_tools_management/tpl_control/control_arbiter/TplArbiter.h"
+#include "agribot_tools_management/common/TplControlTopicName.h"
 
 namespace tool_manager
 {
@@ -84,9 +86,9 @@ std::tuple<std::string, std::string> TplArbiter::getFrontBackSourceTopics(Contro
   switch (src)
   {
     case ControlSource::Manual:
-      return { topic_names_.front_manual, topic_names_.back_manual };
+      return { tpl_control_topic_name.front_manual_setpoint, tpl_control_topic_name.back_manual_setpoint };
     case ControlSource::Navigation:
-      return { topic_names_.front_navigation, topic_names_.back_navigation };
+      return { tpl_control_topic_name.front_navigation_setpoint, tpl_control_topic_name.back_navigation_setpoint };
     default:
       return { "", "" };
   }
@@ -94,6 +96,6 @@ std::tuple<std::string, std::string> TplArbiter::getFrontBackSourceTopics(Contro
 
 std::tuple<std::string, std::string> TplArbiter::getFrontBackDestinationTopics() const
 {
-  return { topic_names_.front_destinaton, topic_names_.back_destinaton };
+  return { tpl_control_topic_name.front_setpoint, tpl_control_topic_name.back_setpoint };
 }
 }  // namespace tool_manager

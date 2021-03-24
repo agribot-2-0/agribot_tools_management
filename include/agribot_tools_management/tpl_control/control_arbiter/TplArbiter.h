@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Agribot. All rights reserved.
+ * Copyright (C) 2021 Agribot. All rights reserved.
  */
 
 #pragma once
@@ -17,15 +17,6 @@ constexpr float sec_to_ms = 0.001;
 class TplArbiter
 {
  private:
-  const struct
-  {
-    std::string front_manual = "/agribot/control/tool/front/manual";
-    std::string back_manual = "/agribot/control/tool/back/manual";
-    std::string front_navigation = "/agribot/control/tool/front/navigation";
-    std::string back_navigation = "/agribot/control/tool/back/navigation";
-    std::string front_destinaton = "/agribot/control/tool/front";
-    std::string back_destinaton = "/agribot/control/tool/back";
-  } topic_names_;
   ControlSource source_;
   int timeout_val_;
   std::unordered_map<ConfigIndex, int, HashConf> timeout_;

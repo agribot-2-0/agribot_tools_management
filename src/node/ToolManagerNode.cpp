@@ -3,6 +3,7 @@
  */
 
 #include "agribot_tools_management/node/ToolManagerNode.h"
+#include "agribot_tools_management/common/MsgStructTransformFunctions.h"
 
 namespace tool_manager
 {
@@ -183,54 +184,42 @@ bool ToolManagerNode::controlArbiterService(
   }
 }
 
-TplConfig ToolManagerNode::toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg) const
-{
-  return { tool_msg->tpl_angle,        tool_msg->tpl_height,      tool_msg->red_valve_flow,
-           tool_msg->green_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
-}
-
-void ToolManagerNode::tplConfigToToolMsg(const TplConfig& config, agribot_msgs::AgribotTool& tool_msg) const
-{
-  tool_msg.tpl_angle = config.tpl_angle;
-  tool_msg.tpl_height = config.tpl_height;
-  tool_msg.red_valve_flow = config.red_valve_flow;
-  tool_msg.green_valve_flow = config.green_valve_flow;
-  tool_msg.blue_valve_flow = config.blue_valve_flow;
-  tool_msg.pto_rpm = config.pto_rpm;
-}
-
 void ToolManagerNode::republishControlMsg() const
 {
   agribot_msgs::AgribotTool msg;
   auto [cfg_front, cfg_back] =
       tpl_control_broadcast_handler_.getConfigsFrontBack(tpl_control_arbiter_.getTplControlSource());
-  tplConfigToToolMsg(cfg_front, msg);
+  msg_struct_transform_functions::tplConfigToToolMsg(cfg_front, msg);
   tpl_control_destination_front_pub_.publish(msg);
-  tplConfigToToolMsg(cfg_back, msg);
+  msg_struct_transform_functions::tplConfigToToolMsg(cfg_back, msg);
   tpl_control_destination_back_pub_.publish(msg);
 }
 
 void ToolManagerNode::cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_broadcast_handler_.setConfig(ConfigIndex::FrontManual, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::FrontManual,
+                                           msg_struct_transform_functions::toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::FrontManual);
 }
 
 void ToolManagerNode::cmdToolsBackManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_broadcast_handler_.setConfig(ConfigIndex::BackManual, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::BackManual,
+                                           msg_struct_transform_functions::toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::BackManual);
 }
 
 void ToolManagerNode::cmdToolsFrontNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_broadcast_handler_.setConfig(ConfigIndex::FrontNavigation, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::FrontNavigation,
+                                           msg_struct_transform_functions::toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::FrontNavigation);
 }
 
 void ToolManagerNode::cmdToolsBackNaviCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  tpl_control_broadcast_handler_.setConfig(ConfigIndex::BackNavigation, toolMsgToTplConfig(tool_msg));
+  tpl_control_broadcast_handler_.setConfig(ConfigIndex::BackNavigation,
+                                           msg_struct_transform_functions::toolMsgToTplConfig(tool_msg));
   tpl_control_arbiter_.monitorResetTimeoutCnt(ConfigIndex::BackNavigation);
 }
 

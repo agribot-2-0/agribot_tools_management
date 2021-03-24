@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Agribot. All rights reserved.
+ * Copyright (C) 2021 Agribot. All rights reserved.
  */
 
 #pragma once
@@ -68,9 +68,6 @@ class ToolManagerNode
   bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,      // NOLINT(runtime/references)
                              agribot_msgs::ToolManagerControlSource::Response& res);    // NOLINT(runtime/references)
 
-  TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg) const;
-  void tplConfigToToolMsg(const TplConfig& config,
-                          agribot_msgs::AgribotTool& tool_msg) const;  // NOLINT(runtime/references)
   void republishControlMsg() const;
 
   void cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);
