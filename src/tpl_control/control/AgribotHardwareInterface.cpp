@@ -31,26 +31,6 @@ AgribotHardwareInterface::~AgribotHardwareInterface()
 {
 }
 
-// void AgribotHardwareInterface::update(const ros::TimerEvent& e)
-// {
-//   _logInfo = "\n";
-//   _logInfo += "Joint Position Command:\n";
-//   for (int i = 0; i < num_joints_; i++)
-//   {
-//     std::ostringstream jointPositionStr;
-//     jointPositionStr << joint_position_command_[i];
-//     _logInfo += "  " + joint_names_[i] + ": " + jointPositionStr.str() + "\n";
-//   }
-
-//   elapsed_time_ = ros::Duration(e.current_real - e.last_real);
-
-//   read();
-//   // controller_manager_->update(ros::Time::now(), elapsed_time_); move to outer ROS loop
-//   write(elapsed_time_);
-
-//   ROS_INFO_STREAM(_logInfo);
-// }
-
 // // TODO: get current data from topic, which contains TPL encoder data
 void AgribotHardwareInterface::read(const TplConfig& front_feedback, const TplConfig& back_feedback)
 {

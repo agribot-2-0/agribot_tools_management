@@ -35,7 +35,6 @@ class AgribotHardwareInterface : public hardware_interface::RobotHW
   AgribotHardwareInterface(std::vector<std::string>&& joint_names);
   ~AgribotHardwareInterface();
   void read(const TplConfig& front_feedback, const TplConfig& back_feedback);
-  void update();
   void write(TplConfig& front_control, TplConfig& back_control);
 };
 }  // namespace tool_manager
