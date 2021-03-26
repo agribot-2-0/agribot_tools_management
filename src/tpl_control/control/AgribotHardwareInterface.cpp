@@ -1,6 +1,7 @@
 
 #include <sstream>
 #include "agribot_tools_management/tpl_control/control/AgribotHardwareInterface.h"
+#include "agribot_tools_management/common/JointsNames.h"
 
 namespace tool_manager
 {
@@ -32,57 +33,23 @@ AgribotHardwareInterface::~AgribotHardwareInterface()
 }
 
 // // TODO: get current data from topic, which contains TPL encoder data
-void AgribotHardwareInterface::read(const TplConfig& front_feedback, const TplConfig& back_feedback)
+void AgribotHardwareInterface::read(const std::unordered_map<std::string, double>& feedbacks)
 {
-  for (const auto& name : joint_names_)
-  {
-    position_[name] = 0.32;
-  }
-//   _logInfo += "Joint State:\n";
-//   for (int i = 0; i < num_joints_; i++)
-//   {
-//     joint_position_[i] = i;
-
-//     std::ostringstream jointPositionStr;
-//     jointPositionStr << joint_position_[i];
-//     _logInfo += "  " + joint_names_[i] + ": " + jointPositionStr.str() + "\n";
-
-//     // tr1.setJoint(joint);
-//   }
+  position_[joint_names.front_tpl_lower_hitches_revolute] = feedbacks.at(joint_names.front_tpl_lower_hitches_revolute);
+  position_[joint_names.front_tpl_upper_hitch_prismatic] = feedbacks.at(joint_names.front_tpl_upper_hitch_prismatic);
+  position_[joint_names.back_tpl_lower_hitches_revolute] = feedbacks.at(joint_names.back_tpl_lower_hitches_revolute);
+  position_[joint_names.back_tpl_upper_hitch_prismatic] = feedbacks.at(joint_names.back_tpl_upper_hitch_prismatic);
 }
 
-void AgribotHardwareInterface::write(TplConfig& front_control, TplConfig& back_control)
+void AgribotHardwareInterface::write(std::unordered_map<std::string, double>& commands) const
 {
-//   positionJointSoftLimitsInterface.enforceLimits(elapsed_time);
-
-//   _logInfo += "Joint Effort Command:\n";
-//   for (int i = 0; i < num_joints_; i++)
-//   {
-//     // tr1cpp::Joint joint = tr1.getJoint(joint_names_[i]);
-//     // if (joint_effort_command_[i] > 1) joint_effort_command_[i] = 1;
-//     // if (joint_effort_command_[i] < -1) joint_effort_command_[i] = -1;
-
-//     double effort = joint_effort_command_[i];
-
-//     // uint8_t duration = 15;
-//     // if (joint.getActuatorType() == 1)
-//     // {  // servo
-//     //   double previousEffort = joint.getPreviousEffort();
-//     //   effort += previousEffort;
-//     // }
-
-//     // joint.actuate(effort, duration);
-
-//     std::ostringstream jointEffortStr;
-//     jointEffortStr << joint_effort_command_[i];
-//     _logInfo += "  " + joint_names_[i] + ": " + jointEffortStr.str() + "\n";
-//   }
-
-  for (const auto& name : joint_names_)
-  {
-    ROS_ERROR_STREAM(name << " effort command: " << effort_command_[name]);
-    ROS_ERROR_STREAM(name << " positi command: " << position_command_[name]);
-  }
+  commands[joint_names.front_tpl_lower_hitches_revolute] =
+      effort_command_.at(joint_names.front_tpl_lower_hitches_revolute);
+  commands[joint_names.front_tpl_upper_hitch_prismatic] =
+      effort_command_.at(joint_names.front_tpl_upper_hitch_prismatic);
+  commands[joint_names.back_tpl_lower_hitches_revolute] =
+      effort_command_.at(joint_names.back_tpl_lower_hitches_revolute);
+  commands[joint_names.back_tpl_upper_hitch_prismatic] = effort_command_.at(joint_names.back_tpl_upper_hitch_prismatic);
 }
 
 }  // namespace tool_manager

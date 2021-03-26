@@ -24,7 +24,7 @@ namespace tool_manager
 {
 class ToolControllerNode
 {
- private:
+private:
   std::shared_ptr<ros::NodeHandle> node_handle_;
   // ros_control:
   std::unique_ptr<AgribotHardwareInterface> agribot_hardware_interface_;
@@ -41,14 +41,12 @@ class ToolControllerNode
   ros::Publisher front_tpl_lower_hitches_revolute_command_pub_;
   ros::Publisher front_tpl_upper_hitch_prismatic_command_pub_;
   // Structures for storing feedback and setpoints
-  TplConfig front_tpl_feedback_;
-  TplConfig back_tpl_feedback_;
   TplConfig front_tpl_setpoint_;
   TplConfig back_tpl_setpoint_;
-  // Structures for storing control
-  TplConfig front_tpl_control_;
-  TplConfig back_tpl_control_;
+  std::unordered_map<std::string, double> feedback_values_;
+  std::unordered_map<std::string, double> control_values_;
 
+  void initDataMaps(const std::vector<std::string>& names);
   void frontTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
   void backTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
   void frontTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
@@ -56,7 +54,7 @@ class ToolControllerNode
   void publishControlMessages() const;
   void publishCommands() const;
 
- public:
+public:
   ToolControllerNode(int argc, char** argv);
   void run();
 };

@@ -5,17 +5,29 @@
 #include "agribot_tools_management/node/ToolControllerNode.h"
 #include "agribot_tools_management/common/TplControlTopicName.h"
 #include "agribot_tools_management/common/MsgStructTransformFunctions.h"
+#include "agribot_tools_management/common/JointsNames.h"
 
 namespace tool_manager
 {
+void ToolControllerNode::initDataMaps(const std::vector<std::string>& names)
+{
+  for (const auto& name : names)
+  {
+    feedback_values_[name] = 0.0;
+    control_values_[name] = 0.0;
+  }
+}
+
 void ToolControllerNode::frontTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-  front_tpl_feedback_ = msg_struct_transform_functions::toolMsgToTplConfig(msg);
+  feedback_values_[joint_names.front_tpl_upper_hitch_prismatic] = msg->tpl_height;
+  feedback_values_[joint_names.front_tpl_lower_hitches_revolute] = msg->tpl_angle;
 }
 
 void ToolControllerNode::backTplFeedbackCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-  back_tpl_feedback_ = msg_struct_transform_functions::toolMsgToTplConfig(msg);
+  feedback_values_[joint_names.back_tpl_upper_hitch_prismatic] = msg->tpl_height;
+  feedback_values_[joint_names.back_tpl_lower_hitches_revolute] = msg->tpl_angle;
 }
 
 void ToolControllerNode::frontTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
@@ -31,9 +43,11 @@ void ToolControllerNode::backTplSetpointCallback(const agribot_msgs::AgribotTool
 void ToolControllerNode::publishControlMessages() const
 {
   agribot_msgs::AgribotTool msg;
-  msg_struct_transform_functions::tplConfigToToolMsg(front_tpl_control_, msg);
+  msg.tpl_angle = control_values_.at(joint_names.front_tpl_lower_hitches_revolute);
+  msg.tpl_height = -control_values_.at(joint_names.front_tpl_upper_hitch_prismatic);
   front_tpl_control_pub_.publish(msg);
-  msg_struct_transform_functions::tplConfigToToolMsg(back_tpl_control_, msg);
+  msg.tpl_angle = control_values_.at(joint_names.back_tpl_lower_hitches_revolute);
+  msg.tpl_height = -control_values_.at(joint_names.back_tpl_upper_hitch_prismatic);
   back_tpl_control_pub_.publish(msg);
 }
 
@@ -66,6 +80,7 @@ ToolControllerNode::ToolControllerNode(int argc, char** argv)
     ROS_ERROR_STREAM("[ToolControllerNode] " << ex.what());
     ros::shutdown();
   }
+  initDataMaps(joints_names);
   agribot_hardware_interface_ = std::make_unique<AgribotHardwareInterface>(std::move(joints_names));
   control_manager_ =
       std::make_unique<controller_manager::ControllerManager>(&(*agribot_hardware_interface_), *node_handle_);
@@ -103,9 +118,9 @@ void ToolControllerNode::run()
     // ros control
     time = ros::Time::now();
     const ros::Duration period = time - previous_time;
-    agribot_hardware_interface_->read(front_tpl_feedback_, back_tpl_feedback_);
+    agribot_hardware_interface_->read(feedback_values_);
     control_manager_->update(ros::Time::now(), period);
-    agribot_hardware_interface_->write(front_tpl_control_, back_tpl_control_);
+    agribot_hardware_interface_->write(control_values_);
     previous_time = time;
     // publish control values
     publishControlMessages();  // publish control valves values (output from ros_control)
