@@ -7,16 +7,16 @@ agribot:
       front_tpl_lower_hitches_revolute_control:
         type: effort_controllers/JointPositionController
         joint: front_tpl_lower_hitches_revolute_joint
-        pid: {p: 3.0, i: 0.9, d: 0.5}
+        pid: {p: -100.0, i: 0.0, d: 0.0, i_clamp_min: -20.0, i_clamp_max: 20.0}
       back_tpl_lower_hitches_revolute_control:
         type: effort_controllers/JointPositionController
         joint: back_tpl_lower_hitches_revolute_joint
-        pid: {p: 3.0, i: 0.8, d: 0.4}
+        pid: {p: 50.0, i: 0.0, d: 0.0, i_clamp_min: -20.0, i_clamp_max: 20.0}
       front_tpl_upper_hitch_prismatic_control:
         type: effort_controllers/JointPositionController
         joint: front_tpl_upper_hitch_prismatic_joint
-        pid: {p: 3.0, i: 0.7, d: 0.3}
+        pid: {p: -200.0, i: 0.0, d: 0.0, i_clamp_min: -20.0, i_clamp_max: 20.0}
       back_tpl_upper_hitch_prismatic_control:
         type: effort_controllers/JointPositionController
         joint: back_tpl_upper_hitch_prismatic_joint
-        pid: {p: 3.0, i: 0.6, d: 0.2}
+        pid: {p: -300.0, i: 0.0, d: 0.0, i_clamp_min: -20.0, i_clamp_max: 20.0}

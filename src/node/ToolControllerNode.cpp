@@ -3,9 +3,10 @@
  */
 
 #include "agribot_tools_management/node/ToolControllerNode.h"
-#include "agribot_tools_management/common/TplControlTopicName.h"
-#include "agribot_tools_management/common/MsgStructTransformFunctions.h"
+
 #include "agribot_tools_management/common/JointsNames.h"
+#include "agribot_tools_management/common/MsgStructTransformFunctions.h"
+#include "agribot_tools_management/common/TplControlTopicName.h"
 
 namespace tool_manager
 {
@@ -44,10 +45,10 @@ void ToolControllerNode::publishControlMessages() const
 {
   agribot_msgs::AgribotTool msg;
   msg.tpl_angle = control_values_.at(joint_names.front_tpl_lower_hitches_revolute);
-  msg.tpl_height = -control_values_.at(joint_names.front_tpl_upper_hitch_prismatic);
+  msg.tpl_height = control_values_.at(joint_names.front_tpl_upper_hitch_prismatic);
   front_tpl_control_pub_.publish(msg);
+  msg.tpl_height = control_values_.at(joint_names.back_tpl_upper_hitch_prismatic);
   msg.tpl_angle = control_values_.at(joint_names.back_tpl_lower_hitches_revolute);
-  msg.tpl_height = -control_values_.at(joint_names.back_tpl_upper_hitch_prismatic);
   back_tpl_control_pub_.publish(msg);
 }
 
@@ -58,11 +59,11 @@ void ToolControllerNode::publishCommands() const
   std_msgs::Float64 msg;
   msg.data = front_tpl_setpoint_.tpl_angle;
   front_tpl_lower_hitches_revolute_command_pub_.publish(msg);
-  msg.data = -front_tpl_setpoint_.tpl_height;
+  msg.data = front_tpl_setpoint_.tpl_height;
   front_tpl_upper_hitch_prismatic_command_pub_.publish(msg);
   msg.data = back_tpl_setpoint_.tpl_angle;
   back_tpl_lower_hitches_revolute_command_pub_.publish(msg);
-  msg.data = -back_tpl_setpoint_.tpl_height;
+  msg.data = back_tpl_setpoint_.tpl_height;
   back_tpl_upper_hitch_prismatic_command_pub_.publish(msg);
 }
 
