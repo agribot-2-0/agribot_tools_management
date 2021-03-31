@@ -11,7 +11,6 @@
   <build_depend>roscpp</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <exec_depend>roscpp</exec_depend>
-  <exec_depend>agribot_description</exec_depend>
   <build_depend>agribot_common</build_depend>
   <build_depend>hardware_interface</build_depend>
   <build_depend>controller_manager</build_depend>

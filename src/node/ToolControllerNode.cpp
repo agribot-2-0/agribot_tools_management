@@ -67,10 +67,22 @@ void ToolControllerNode::publishCommands() const
   back_tpl_upper_hitch_prismatic_command_pub_.publish(msg);
 }
 
+void ToolControllerNode::waitForRobotDescriptionParameter() const
+{
+  ros::Rate rate(1);
+  while (!node_handle_->hasParam("/robot_description"))
+  {
+    ros::spinOnce();
+    rate.sleep();
+  }
+}
+
 ToolControllerNode::ToolControllerNode(int argc, char** argv)
 {
   ros::init(argc, argv, "agribot_tools_control_node");
   node_handle_ = std::make_shared<ros::NodeHandle>();
+  // /robot_descritpion parameter is needed by controller manager
+  waitForRobotDescriptionParameter();
   std::vector<std::string> joints_names;
   try
   {

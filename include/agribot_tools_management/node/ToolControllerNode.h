@@ -53,6 +53,7 @@ class ToolControllerNode
   void backTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg);
   void publishControlMessages() const;
   void publishCommands() const;
+  void waitForRobotDescriptionParameter() const;
 
  public:
   ToolControllerNode(int argc, char** argv);
