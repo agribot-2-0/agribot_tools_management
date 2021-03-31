@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2021 Agribot. All rights reserved.
+ */
 
 #include <sstream>
 #include "agribot_tools_management/tpl_control/control/AgribotHardwareInterface.h"

@@ -7,24 +7,24 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
-#include <memory>
-#include <vector>
-#include <string_view>
-
-#include <agribot_common/TplConfig.h>
-#include <agribot_common/CommonFunctions/ros_common_functions.h>
-
 #include <agribot_msgs/AgribotTool.h>
 #include <std_msgs/Float64.h>
-
+#include <agribot_common/TplConfig.h>
+#include <agribot_common/CommonFunctions/ros_common_functions.h>
 #include <controller_manager/controller_manager.h>
 #include <agribot_tools_management/tpl_control/control/AgribotHardwareInterface.h>
+
+#include <string>
+#include <memory>
+#include <unordered_map>
+#include <vector>
+#include <string_view>
 
 namespace tool_manager
 {
 class ToolControllerNode
 {
-private:
+ private:
   std::shared_ptr<ros::NodeHandle> node_handle_;
   // ros_control:
   std::unique_ptr<AgribotHardwareInterface> agribot_hardware_interface_;
@@ -54,7 +54,7 @@ private:
   void publishControlMessages() const;
   void publishCommands() const;
 
-public:
+ public:
   ToolControllerNode(int argc, char** argv);
   void run();
 };

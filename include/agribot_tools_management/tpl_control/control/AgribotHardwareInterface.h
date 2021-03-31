@@ -15,6 +15,11 @@
 
 #include <agribot_common/TplConfig.h>
 
+#include <vector>
+#include <string>
+#include <unordered_map>
+
+
 namespace tool_manager
 {
 class AgribotHardwareInterface : public hardware_interface::RobotHW
@@ -32,9 +37,9 @@ class AgribotHardwareInterface : public hardware_interface::RobotHW
   hardware_interface::EffortJointInterface joint_effort_interface_;
 
  public:
-  AgribotHardwareInterface(std::vector<std::string>&& joint_names);
+  explicit AgribotHardwareInterface(std::vector<std::string>&& joint_names);
   ~AgribotHardwareInterface();
   void read(const std::unordered_map<std::string, double>& feedbacks);
-  void write(std::unordered_map<std::string, double>& commands) const;
+  void write(std::unordered_map<std::string, double>& commands) const;  // NOLINT(runtime/references)
 };
 }  // namespace tool_manager

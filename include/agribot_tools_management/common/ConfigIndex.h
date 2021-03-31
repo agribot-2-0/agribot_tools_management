@@ -15,7 +15,7 @@ enum class ConfigIndex
 };
 class HashConf
 {
-public:
+ public:
   std::size_t operator()(const ConfigIndex& idx) const
   {
     return static_cast<std::size_t>(idx);
