@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Agribot. All rights reserved.
+ * Copyright (C) 2020-2021 Agribot. All rights reserved.
  */
 
 #include "agribot_tools_management/node/ToolControllerNode.h"
@@ -54,8 +54,6 @@ void ToolControllerNode::publishControlMessages() const
 
 void ToolControllerNode::publishCommands() const
 {
-  // [IMPORTANT] In order for controller to work proerly, the setpoint for prismatic joint needs to be set
-  // as an negative values! (this is caused by joints description in /robot_description param)
   std_msgs::Float64 msg;
   msg.data = front_tpl_setpoint_.tpl_angle;
   front_tpl_lower_hitches_revolute_command_pub_.publish(msg);
@@ -123,7 +121,7 @@ void ToolControllerNode::run()
 {
   ros::AsyncSpinner spinner(1);
   spinner.start();
-  ros::Rate rate(10);  // todo(mwiadoms): read loop from rosparam
+  ros::Rate rate(10);
   ros::Time time;
   ros::Time previous_time;
   while (ros::ok())
@@ -135,7 +133,6 @@ void ToolControllerNode::run()
     control_manager_->update(ros::Time::now(), period);
     agribot_hardware_interface_->write(control_values_);
     previous_time = time;
-    // publish control values
     publishControlMessages();  // publish control valves values (output from ros_control)
     publishCommands();         // publish setpoints, from inner class structers to controller command topics (input to
                                // ros_control)

@@ -1,10 +1,10 @@
 <launch>
 
-  <rosparam file="$(find agribot_tools_management)/param/ros_control_config/hardware.yaml" command="load"/>
-  <rosparam file="$(find agribot_tools_management)/param/ros_control_config/controllers.yaml" command="load"/>
-  <rosparam file="$(find agribot_tools_management)/param/ros_control_config/joint_limits.yaml" command="load"/>
+  <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/ros_control_config/hardware.yaml"/>
+  <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/ros_control_config/controllers.yaml"/>
+  <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/ros_control_config/joint_limits.yaml"/>
 
-  <rosparam file="$(find agribot_tools_management)/param/tool_manager_params.yaml" command="load"/>
+  <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/tool_manager_params.yaml"/>
   <node pkg="agribot_tools_management" type="agribot_tools_management_node" name="agribot_tools_management_node"/>
   <node pkg="agribot_tools_management" type="agribot_tools_control_node" name="agribot_tools_control_node" output="screen"/>
 

@@ -1,8 +1,0 @@
-agribot:
-  hardware_interface:
-    loop_hz: 10 
-    joints: 
-      - front_tpl_lower_hitches_revolute_joint
-      - back_tpl_lower_hitches_revolute_joint
-      - front_tpl_upper_hitch_prismatic_joint
-      - back_tpl_upper_hitch_prismatic_joint

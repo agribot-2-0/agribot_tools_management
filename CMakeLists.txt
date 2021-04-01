@@ -47,12 +47,16 @@ include_directories(
 )
 
 link_directories("${PROJECT_SOURCE_DIR}")
-add_executable(agribot_tools_management_node src/node/tool_manager_node.cpp src/node/ToolManagerNode.cpp src/scanner/Scanner.cpp src/tpl_control/control_arbiter/TplControlBroadcaster.cpp src/tpl_control/control_arbiter/TplArbiter.cpp)
+list(APPEND agribot_tool_manager_sources src/node/tool_manager_node.cpp src/node/ToolManagerNode.cpp src/scanner/Scanner.cpp)
+list(APPEND agribot_tool_manager_sources src/tpl_control/control_arbiter/TplControlBroadcaster.cpp src/tpl_control/control_arbiter/TplArbiter.cpp)
+add_executable(agribot_tools_management_node ${agribot_tool_manager_sources})
 target_link_libraries(agribot_tools_management_node ${catkin_LIBRARIES})
 add_dependencies(agribot_tools_management_node ${catkin_EXPORTED_TARGETS})
 
 link_directories("${PROJECT_SOURCE_DIR}")
-add_executable(agribot_tools_control_node src/node/tool_control_node.cpp src/node/ToolControllerNode.cpp src/tpl_control/control/AgribotHardwareInterface.cpp)
+list(APPEND agribot_tools_control_sources src/node/tool_control_node.cpp src/node/ToolControllerNode.cpp)
+list(APPEND agribot_tools_control_sources src/tpl_control/control/AgribotHardwareInterface.cpp)
+add_executable(agribot_tools_control_node ${agribot_tools_control_sources})
 target_link_libraries(agribot_tools_control_node ${catkin_LIBRARIES})
 add_dependencies(agribot_tools_control_node ${catkin_EXPORTED_TARGETS})
 
