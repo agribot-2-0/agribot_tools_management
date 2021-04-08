@@ -122,8 +122,8 @@ void ToolControllerNode::run()
   ros::AsyncSpinner spinner(1);
   spinner.start();
   ros::Rate rate(10);
-  ros::Time time;
-  ros::Time previous_time;
+  ros::Time time = ros::Time::now();
+  ros::Time previous_time = ros::Time::now();
   while (ros::ok())
   {
     // ros control
