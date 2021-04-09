@@ -31,9 +31,6 @@ AgribotHardwareInterface::AgribotHardwareInterface(std::vector<std::string>&& jo
   registerInterface(&joint_effort_interface_);
 }
 
-AgribotHardwareInterface::~AgribotHardwareInterface()
-{
-}
 
 void AgribotHardwareInterface::read(const std::unordered_map<std::string, double>& feedbacks)
 {

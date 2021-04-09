@@ -38,7 +38,7 @@ class AgribotHardwareInterface : public hardware_interface::RobotHW
 
  public:
   explicit AgribotHardwareInterface(std::vector<std::string>&& joint_names);
-  ~AgribotHardwareInterface();
+  ~AgribotHardwareInterface() override = default;
   void read(const std::unordered_map<std::string, double>& feedbacks);
   void write(std::unordered_map<std::string, double>& commands) const;  // NOLINT(runtime/references)
 };
