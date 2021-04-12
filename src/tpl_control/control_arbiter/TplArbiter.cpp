@@ -61,7 +61,7 @@ void TplArbiter::monitorResetTimeoutCnts()
 {
   for (const auto& [timeout_index, timeout_value] : timeout_)
   {
-    (void)timeout_value;  // suppress [-Wunused-variable]
+    static_cast<void>(timeout_value);  // suppress [-Wunused-variable]
     TplArbiter::monitorResetTimeoutCnt(timeout_index);
   }
 }
