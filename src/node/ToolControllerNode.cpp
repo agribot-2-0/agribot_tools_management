@@ -33,12 +33,12 @@ void ToolControllerNode::backTplFeedbackCallback(const agribot_msgs::AgribotTool
 
 void ToolControllerNode::frontTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-  front_tpl_setpoint_ = msg_struct_transform_functions::toolMsgToTplConfig(msg); // todo: zmienic na referencje
+  msg_struct_transform_functions::toolMsgToTplConfig(front_tpl_setpoint_, msg);
 }
 
 void ToolControllerNode::backTplSetpointCallback(const agribot_msgs::AgribotTool::ConstPtr& msg)
 {
-  back_tpl_setpoint_ = msg_struct_transform_functions::toolMsgToTplConfig(msg); // todo: zmienic na referencje
+  msg_struct_transform_functions::toolMsgToTplConfig(back_tpl_setpoint_, msg);
 }
 
 void ToolControllerNode::publishControlMessages() const
