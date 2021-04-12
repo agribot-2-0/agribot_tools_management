@@ -1,9 +1,11 @@
 /*
- * Copyright (C) 2020 Agribot. All rights reserved.
+ * Copyright (C) 2020-2021 Agribot. All rights reserved.
  */
 
 #pragma once
 
+namespace tool_manager
+{
 enum class ConfigIndex
 {
   FrontManual = 0,
@@ -19,3 +21,4 @@ class HashConf
     return static_cast<std::size_t>(idx);
   }
 };
+}  // namespace tool_manager

@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2020 Agribot. All rights reserved.
+ * Copyright (C) 2020-2021 Agribot. All rights reserved.
  */
 
-#include "agribot_tools_management/tpl_control/TplController.h"
+#include "agribot_tools_management/tpl_control/control_arbiter/TplControlBroadcaster.h"
 
 namespace tool_manager
 {
-TplController::TplController()
+TplControlBroadcaster::TplControlBroadcaster()
 {
   tpl_config_[ConfigIndex::FrontManual] = TplConfig();
   tpl_config_[ConfigIndex::BackManual] = TplConfig();
@@ -14,12 +14,12 @@ TplController::TplController()
   tpl_config_[ConfigIndex::BackNavigation] = TplConfig();
 }
 
-void TplController::setConfig(ConfigIndex const idx, TplConfig const conf)
+void TplControlBroadcaster::setConfig(ConfigIndex const idx, TplConfig const conf)
 {
   tpl_config_[idx] = conf;
 }
 
-std::tuple<TplConfig, TplConfig> TplController::getConfigsFrontBack(ControlSource src) const
+std::tuple<TplConfig, TplConfig> TplControlBroadcaster::getConfigsFrontBack(ControlSource src) const
 {
   switch (src)
   {

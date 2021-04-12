@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Agribot. All rights reserved.
+ * Copyright (C) 2020-2021 Agribot. All rights reserved.
  */
 
 #pragma once
@@ -24,8 +24,8 @@
 #include <boost/thread.hpp>
 
 #include "agribot_tools_management/scanner/Scanner.h"
-#include "agribot_tools_management/tpl_control/TplController.h"
-#include "agribot_tools_management/tpl_control/TplArbiter.h"
+#include "agribot_tools_management/tpl_control/control_arbiter/TplControlBroadcaster.h"
+#include "agribot_tools_management/tpl_control/control_arbiter/TplArbiter.h"
 #include "agribot_tools_management/common/ReturnCode.h"
 #include "agribot_tools_management/common/ControlSource.h"
 
@@ -50,7 +50,7 @@ class ToolManagerNode
 
   Scanner scan_handler_;
   TplArbiter tpl_control_arbiter_;
-  TplController tpl_control_handler_;
+  TplControlBroadcaster tpl_control_broadcast_handler_;
 
   // Custom Callback Queue
   ros::CallbackQueue queue_;
@@ -68,9 +68,6 @@ class ToolManagerNode
   bool controlArbiterService(agribot_msgs::ToolManagerControlSource::Request& req,      // NOLINT(runtime/references)
                              agribot_msgs::ToolManagerControlSource::Response& res);    // NOLINT(runtime/references)
 
-  TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg) const;
-  void tplConfigToToolMsg(const TplConfig& config,
-                          agribot_msgs::AgribotTool& tool_msg) const;  // NOLINT(runtime/references)
   void republishControlMsg() const;
 
   void cmdToolsFrontManualCallback(const agribot_msgs::AgribotTool::ConstPtr& tool_msg);

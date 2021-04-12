@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Agribot. All rights reserved.
+ * Copyright (C) 2020-2021 Agribot. All rights reserved.
  */
 
 #pragma once
@@ -15,13 +15,13 @@
 
 namespace tool_manager
 {
-class TplController
+class TplControlBroadcaster
 {
  private:
   std::unordered_map<ConfigIndex, TplConfig, HashConf> tpl_config_;
 
  public:
-  TplController();
+  TplControlBroadcaster();
   void setConfig(ConfigIndex const idx, TplConfig const conf);
   std::tuple<TplConfig, TplConfig> getConfigsFrontBack(ControlSource src) const;
 };
