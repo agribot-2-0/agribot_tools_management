@@ -16,15 +16,16 @@ inline tool_manager::TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotToo
            tool_msg->green_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
 }
 
-inline void tplConfigToToolMsg(const tool_manager::TplConfig& config,
-                               agribot_msgs::AgribotTool& tool_msg)  // NOLINT(runtime/references)
+inline agribot_msgs::AgribotTool tplConfigToToolMsg(const tool_manager::TplConfig& config)
 {
+  agribot_msgs::AgribotTool tool_msg;
   tool_msg.tpl_angle = config.tpl_angle;
   tool_msg.tpl_height = config.tpl_height;
   tool_msg.red_valve_flow = config.red_valve_flow;
   tool_msg.green_valve_flow = config.green_valve_flow;
   tool_msg.blue_valve_flow = config.blue_valve_flow;
   tool_msg.pto_rpm = config.pto_rpm;
+  return tool_msg;
 }
 }  // namespace msg_struct_transform_functions
 }  // namespace tool_manager
