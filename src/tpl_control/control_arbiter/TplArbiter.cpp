@@ -72,7 +72,7 @@ bool TplArbiter::timeoutsExceeded()
 
   for (const auto& [timeout_index, timeout_value] : timeout_)
   {
-    (void)timeout_index;  // suppress [-Wunused-variable]
+    static_cast<void>(timeout_index);  // suppress [-Wunused-variable]
     // if there is no controll message on selected topic for more than one second
     if (timeout_value > timeout_val_)
     {
