@@ -10,15 +10,10 @@ namespace tool_manager
 {
 namespace msg_struct_transform_functions
 {
-inline void toolMsgToTplConfig(tool_manager::TplConfig& config,  // NOLINT(runtime/references)
-                               const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
+inline tool_manager::TplConfig toolMsgToTplConfig(const agribot_msgs::AgribotTool::ConstPtr& tool_msg)
 {
-  config.tpl_angle = tool_msg->tpl_angle;
-  config.tpl_height = tool_msg->tpl_height;
-  config.red_valve_flow = tool_msg->red_valve_flow;
-  config.green_valve_flow = tool_msg->green_valve_flow;
-  config.blue_valve_flow = tool_msg->blue_valve_flow;
-  config.pto_rpm = tool_msg->pto_rpm;
+  return { tool_msg->tpl_angle,        tool_msg->tpl_height,      tool_msg->red_valve_flow,
+           tool_msg->green_valve_flow, tool_msg->blue_valve_flow, tool_msg->pto_rpm };
 }
 
 inline void tplConfigToToolMsg(const tool_manager::TplConfig& config,
