@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <tuple>
 
-#include "agribot_tools_management/common/ControlSource.h"
+#include "agribot_common/common_enums/ControlSource.h"
 #include "agribot_tools_management/common/ConfigIndex.h"
 
 
