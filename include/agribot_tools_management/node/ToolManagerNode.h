@@ -27,7 +27,7 @@
 #include "agribot_tools_management/tpl_control/control_arbiter/TplControlBroadcaster.h"
 #include "agribot_tools_management/tpl_control/control_arbiter/TplArbiter.h"
 #include "agribot_tools_management/common/ReturnCode.h"
-#include "agribot_tools_management/common/ControlSource.h"
+#include "agribot_common/common_enums/ControlSource.h"
 
 namespace tool_manager
 {
