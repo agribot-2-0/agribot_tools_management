@@ -3,12 +3,12 @@
   <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/ros_control_config/hardware.yaml"/>
   <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/tool_manager_params.yaml"/>
   <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/simulation/controllers.yaml"
-  if="$(env AGRIBOT_TOOL_CONTROLLER_SIMLUATED)"/>
+  if="$(env AGRIBOT_TOOL_CONTROLLER_SIMULATED)"/>
   <rosparam command="load" file="$(env AGRIBOT_HOME)/agribot/configs/base/tools_management/ros_control_config/controllers.yaml"
-  if="$(eval env('AGRIBOT_TOOL_CONTROLLER_SIMLUATED') == 'false')"/>
+  if="$(eval env('AGRIBOT_TOOL_CONTROLLER_SIMULATED') == 'false')"/>
   <node pkg="agribot_tools_management" type="agribot_tools_management_node" name="agribot_tools_management_node"/>
   <node pkg="agribot_tools_management" type="agribot_tools_control_node" name="agribot_tools_control_node" output="screen"
-  if="$(eval env('AGRIBOT_TOOL_CONTROLLER_SIMLUATED') == 'false')"/>
+  if="$(eval env('AGRIBOT_TOOL_CONTROLLER_SIMULATED') == 'false')"/>
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true" output="screen" ns="/"
     args="
       /agribot/controller/position/front_tpl_lower_hitches_revolute_control
