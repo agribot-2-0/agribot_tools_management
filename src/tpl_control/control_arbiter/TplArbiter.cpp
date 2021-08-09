@@ -3,6 +3,7 @@
  */
 
 #include "agribot_tools_management/tpl_control/control_arbiter/TplArbiter.h"
+
 #include "agribot_tools_management/common/TplControlTopicName.h"
 
 namespace tool_manager
