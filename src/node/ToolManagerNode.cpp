@@ -3,6 +3,7 @@
  */
 
 #include "agribot_tools_management/node/ToolManagerNode.h"
+
 #include "agribot_tools_management/common/MsgStructTransformFunctions.h"
 
 namespace tool_manager
@@ -233,13 +234,13 @@ void ToolManagerNode::run()
   {
     if (tpl_control_arbiter_.sourceSelected())
     {
-      republishControlMsg();
       if (tpl_control_arbiter_.timeoutsExceeded())
       {
         tpl_control_arbiter_.setTplControlSource(ControlSource::None);
         ROS_WARN_STREAM("[ToolManagement] Control source changed to None");
         ROS_ERROR_STREAM("[ToolManagement] TPL control topic inactivity timeout");
       }
+      republishControlMsg();
     }
     ros::spinOnce();
     rate.sleep();

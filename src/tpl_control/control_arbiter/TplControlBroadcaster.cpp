@@ -28,7 +28,10 @@ std::tuple<TplConfig, TplConfig> TplControlBroadcaster::getConfigsFrontBack(Cont
     case ControlSource::Navigation:
       return { tpl_config_.at(ConfigIndex::FrontNavigation), tpl_config_.at(ConfigIndex::BackNavigation) };
     default:
-      return { TplConfig(), TplConfig() };
+      auto default_tpl_config = TplConfig();
+      default_tpl_config.tpl_angle = 0.8;
+      default_tpl_config.tpl_height = 0.05;
+      return { default_tpl_config, default_tpl_config };
   }
 }
 }  // namespace tool_manager
